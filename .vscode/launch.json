@@ -1,0 +1,18 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Launch GoFrame Server",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceFolder}/server",
+            "env": {
+                "GF_GCFG_FILE": "manifest/config/config.yaml",
+                "GF_LOG_LEVEL": "debug"
+            },
+            "args": [],
+            "console": "integratedTerminal"
+        }
+    ]
+}
