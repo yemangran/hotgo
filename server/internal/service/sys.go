@@ -74,6 +74,20 @@ type (
 		// ClusterSync 集群同步
 		ClusterSync(ctx context.Context, message *gredis.Message)
 	}
+	ISysBsItem interface {
+		// Model 仓库物品ORM模型
+		Model(ctx context.Context, option ...*handler.Option) *gdb.Model
+		// List 获取仓库物品列表
+		List(ctx context.Context, in *sysin.BsItemListInp) (list []*sysin.BsItemListModel, totalCount int, err error)
+		// Export 导出仓库物品
+		Export(ctx context.Context, in *sysin.BsItemListInp) (err error)
+		// Edit 修改/新增仓库物品
+		Edit(ctx context.Context, in *sysin.BsItemEditInp) (err error)
+		// Delete 删除仓库物品
+		Delete(ctx context.Context, in *sysin.BsItemDeleteInp) (err error)
+		// View 获取仓库物品指定信息
+		View(ctx context.Context, in *sysin.BsItemViewInp) (res *sysin.BsItemViewModel, err error)
+	}
 	ISysBsService interface {
 		// Model 服务项目ORM模型
 		Model(ctx context.Context, option ...*handler.Option) *gdb.Model
@@ -87,6 +101,22 @@ type (
 		View(ctx context.Context, in *sysin.BsServiceViewInp) (res *sysin.BsServiceViewModel, err error)
 		// TreeOption 获取服务项目关系树选项
 		TreeOption(ctx context.Context) (nodes []tree.Node, err error)
+	}
+	ISysBsWorkOrder interface {
+		// Model 工单管理ORM模型
+		Model(ctx context.Context, option ...*handler.Option) *gdb.Model
+		// List 获取工单管理列表
+		List(ctx context.Context, in *sysin.BsWorkOrderListInp) (list []*sysin.BsWorkOrderListModel, totalCount int, err error)
+		// Export 导出工单管理
+		Export(ctx context.Context, in *sysin.BsWorkOrderListInp) (err error)
+		// Edit 修改/新增工单管理
+		Edit(ctx context.Context, in *sysin.BsWorkOrderEditInp) (err error)
+		// Delete 删除工单管理
+		Delete(ctx context.Context, in *sysin.BsWorkOrderDeleteInp) (err error)
+		// View 获取工单管理指定信息
+		View(ctx context.Context, in *sysin.BsWorkOrderViewInp) (res *sysin.BsWorkOrderViewModel, err error)
+		// Status 更新工单管理状态
+		Status(ctx context.Context, in *sysin.BsWorkOrderStatusInp) (err error)
 	}
 	ISysConfig interface {
 		// InitConfig 初始化系统配置
@@ -424,7 +454,9 @@ var (
 	localSysAddonsConfig   ISysAddonsConfig
 	localSysAttachment     ISysAttachment
 	localSysBlacklist      ISysBlacklist
+	localSysBsItem         ISysBsItem
 	localSysBsService      ISysBsService
+	localSysBsWorkOrder    ISysBsWorkOrder
 	localSysConfig         ISysConfig
 	localSysCron           ISysCron
 	localSysCronGroup      ISysCronGroup
@@ -488,6 +520,17 @@ func RegisterSysBlacklist(i ISysBlacklist) {
 	localSysBlacklist = i
 }
 
+func SysBsItem() ISysBsItem {
+	if localSysBsItem == nil {
+		panic("implement not found for interface ISysBsItem, forgot register?")
+	}
+	return localSysBsItem
+}
+
+func RegisterSysBsItem(i ISysBsItem) {
+	localSysBsItem = i
+}
+
 func SysBsService() ISysBsService {
 	if localSysBsService == nil {
 		panic("implement not found for interface ISysBsService, forgot register?")
@@ -497,6 +540,17 @@ func SysBsService() ISysBsService {
 
 func RegisterSysBsService(i ISysBsService) {
 	localSysBsService = i
+}
+
+func SysBsWorkOrder() ISysBsWorkOrder {
+	if localSysBsWorkOrder == nil {
+		panic("implement not found for interface ISysBsWorkOrder, forgot register?")
+	}
+	return localSysBsWorkOrder
+}
+
+func RegisterSysBsWorkOrder(i ISysBsWorkOrder) {
+	localSysBsWorkOrder = i
 }
 
 func SysConfig() ISysConfig {

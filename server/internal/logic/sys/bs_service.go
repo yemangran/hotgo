@@ -60,7 +60,7 @@ func (s *sSysBsService) List(ctx context.Context, in *sysin.BsServiceListInp) (l
 	}
 
 	// 排序
-	mod = mod.OrderDesc(dao.BsService.Columns().Id)
+	mod = mod.Order(dao.BsService.Columns().OrderNum)
 
 	// 查询数据
 	if err = mod.ScanAndCount(&list, &totalCount, false); err != nil {
