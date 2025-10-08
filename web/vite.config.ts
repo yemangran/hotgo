@@ -59,6 +59,7 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
     server: {
       host: true,
       port: VITE_PORT,
+      open: 'http://localhost:8001',
       proxy: createProxy(VITE_PROXY),
       // proxy: {
       //     '/api': {
