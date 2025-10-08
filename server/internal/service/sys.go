@@ -102,6 +102,20 @@ type (
 		// TreeOption 获取服务项目关系树选项
 		TreeOption(ctx context.Context) (nodes []tree.Node, err error)
 	}
+	ISysBsStackLog interface {
+		// Model 库存流水ORM模型
+		Model(ctx context.Context, option ...*handler.Option) *gdb.Model
+		// List 获取库存流水列表
+		List(ctx context.Context, in *sysin.BsStackLogListInp) (list []*sysin.BsStackLogListModel, totalCount int, err error)
+		// Export 导出库存流水
+		Export(ctx context.Context, in *sysin.BsStackLogListInp) (err error)
+		// Edit 修改/新增库存流水
+		Edit(ctx context.Context, in *sysin.BsStackLogEditInp) (err error)
+		// Delete 删除库存流水
+		Delete(ctx context.Context, in *sysin.BsStackLogDeleteInp) (err error)
+		// View 获取库存流水指定信息
+		View(ctx context.Context, in *sysin.BsStackLogViewInp) (res *sysin.BsStackLogViewModel, err error)
+	}
 	ISysBsWorkOrder interface {
 		// Model 工单管理ORM模型
 		Model(ctx context.Context, option ...*handler.Option) *gdb.Model
@@ -456,6 +470,7 @@ var (
 	localSysBlacklist      ISysBlacklist
 	localSysBsItem         ISysBsItem
 	localSysBsService      ISysBsService
+	localSysBsStackLog     ISysBsStackLog
 	localSysBsWorkOrder    ISysBsWorkOrder
 	localSysConfig         ISysConfig
 	localSysCron           ISysCron
@@ -540,6 +555,17 @@ func SysBsService() ISysBsService {
 
 func RegisterSysBsService(i ISysBsService) {
 	localSysBsService = i
+}
+
+func SysBsStackLog() ISysBsStackLog {
+	if localSysBsStackLog == nil {
+		panic("implement not found for interface ISysBsStackLog, forgot register?")
+	}
+	return localSysBsStackLog
+}
+
+func RegisterSysBsStackLog(i ISysBsStackLog) {
+	localSysBsStackLog = i
 }
 
 func SysBsWorkOrder() ISysBsWorkOrder {

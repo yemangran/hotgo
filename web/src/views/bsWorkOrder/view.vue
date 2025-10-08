@@ -52,11 +52,10 @@
               </template>
               <span v-html="formValue.defectDescription"></span>
             </n-descriptions-item>
-            <n-descriptions-item>
-              <template #label>
-                分配处理人Id
-              </template>
-              {{ formValue.dispatchId }}
+            <n-descriptions-item label="分配处理人Id">
+              <n-tag :type="dict.getType('%!s(<nil>)', formValue.dispatchId)" size="small" class="min-left-space">
+                {{ dict.getLabel('%!s(<nil>)', formValue.dispatchId) }}
+              </n-tag>
             </n-descriptions-item>
             <n-descriptions-item>
               <template #label>

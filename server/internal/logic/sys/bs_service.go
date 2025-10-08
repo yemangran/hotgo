@@ -49,6 +49,11 @@ func (s *sSysBsService) List(ctx context.Context, in *sysin.BsServiceListInp) (l
 		mod = mod.Where(dao.BsService.Columns().Id, in.Id)
 	}
 
+	// 查询服务名称
+	if in.Name != "" {
+		mod = mod.WhereLike(dao.BsService.Columns().Name, "%"+in.Name+"%")
+	}
+
 	// 查询父键
 	if in.Pid > 0 {
 		mod = mod.Where(dao.BsService.Columns().Pid, in.Pid)

@@ -84,8 +84,9 @@ type BsServiceViewModel struct {
 // BsServiceListInp 获取服务项目列表
 type BsServiceListInp struct {
 	form.PageReq
-	Id  int64 `json:"id"  dc:"主键"`
-	Pid int64 `json:"pid" dc:"父键"`
+	Id   int64  `json:"id"  dc:"主键"`
+	Pid  int64  `json:"pid" dc:"父键"`
+	Name string `json:"name" dc:"服务名称"`
 }
 
 func (in *BsServiceListInp) Filter(ctx context.Context) (err error) {

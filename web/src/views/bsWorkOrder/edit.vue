@@ -54,17 +54,17 @@
               </n-gi>
               <n-gi span="1">
                 <n-form-item label="问题描述" path="problemDescription">
-                  <Editor style="height: 450px" id="problemDescription" v-model:value="formValue.problemDescription" />
+                  <n-input type="textarea" placeholder="问题描述" v-model:value="formValue.problemDescription" />
                 </n-form-item>
               </n-gi>
               <n-gi span="1">
                 <n-form-item label="检测描述" path="defectDescription">
-                  <Editor style="height: 450px" id="defectDescription" v-model:value="formValue.defectDescription" />
+                  <n-input type="textarea" placeholder="检测描述" v-model:value="formValue.defectDescription" />
                 </n-form-item>
               </n-gi>
               <n-gi span="1">
                 <n-form-item label="分配处理人Id" path="dispatchId">
-                  <n-input-number placeholder="请输入分配处理人Id" v-model:value="formValue.dispatchId" />
+                  <n-select v-model:value="formValue.dispatchId" options="" />
                 </n-form-item>
               </n-gi>
               <n-gi span="1">
@@ -109,7 +109,7 @@
               </n-gi>
               <n-gi span="1">
                 <n-form-item label="备注" path="remark">
-                  <Editor style="height: 450px" id="remark" v-model:value="formValue.remark" />
+                  <n-input type="textarea" placeholder="备注" v-model:value="formValue.remark" />
                 </n-form-item>
               </n-gi>
             </n-grid>
@@ -136,7 +136,6 @@
   import { Edit, View } from '@/api/bsWorkOrder';
   import { State, newState, rules } from './model';
   import DatePicker from '@/components/DatePicker/datePicker.vue';
-  import Editor from '@/components/Editor/editor.vue';
   import { useProjectSettingStore } from '@/store/modules/projectSetting';
   import { useMessage } from 'naive-ui';
   import { adaModalWidth } from '@/utils/hotgo';

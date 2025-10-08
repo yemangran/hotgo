@@ -6,7 +6,7 @@
       :show-icon="false"
       preset="dialog"
       transform-origin="center"
-      :title="formValue.id > 0 ? '编辑服务项目 #' + formValue.id : '添加服务项目'"
+      :title="formValue.id > 0 ? '编辑库存流水 #' + formValue.id : '添加库存流水'"
       :style="{
         width: dialogWidth,
       }"
@@ -23,32 +23,28 @@
           >
             <n-grid cols="1 s:1 m:1 l:1 xl:1 2xl:1" responsive="screen">
               <n-gi span="1">
-                <n-form-item label="上级服务" path="pid">
-                  <n-tree-select
-                :options="treeOption"
-                v-model:value="formValue.pid"
-                key-field="id"
-                label-field="name"
-                clearable
-                filterable
-                default-expand-all
-                show-path
-              />
+                <n-form-item label="物品Id" path="itemId">
+                  <n-select v-model:value="formValue.itemId" options="" />
                 </n-form-item>
               </n-gi>
               <n-gi span="1">
-                <n-form-item label="服务名称" path="name">
-                  <n-input placeholder="请输入服务名称" v-model:value="formValue.name" />
+                <n-form-item label="数量" path="qty">
+                  <n-input-number placeholder="请输入数量" v-model:value="formValue.qty" />
                 </n-form-item>
               </n-gi>
               <n-gi span="1">
-                <n-form-item label="价格" path="price">
-                  <n-input-number :min="0" placeholder="请输入价格" v-model:value="formValue.price" />
+                <n-form-item label="工单Id" path="workOrderId">
+                  <n-select v-model:value="formValue.workOrderId" options="" />
                 </n-form-item>
               </n-gi>
               <n-gi span="1">
-                <n-form-item label="序号" path="orderNum">
-                  <n-input-number :min="0" placeholder="请输入序号" v-model:value="formValue.orderNum" />
+                <n-form-item label="创建时间" path="createTime">
+                  <DatePicker v-model:formValue="formValue.createTime" type="datetime" />
+                </n-form-item>
+              </n-gi>
+              <n-gi span="1">
+                <n-form-item label="备注" path="remark">
+                  <n-input type="textarea" placeholder="备注" v-model:value="formValue.remark" />
                 </n-form-item>
               </n-gi>
             </n-grid>
@@ -71,8 +67,9 @@
 
 <script lang="ts" setup>
   import { ref, computed } from 'vue';
-  import { Edit, View } from '@/api/bsService';
-  import { State, newState, treeOption, loadTreeOption, rules } from './model';
+  import { Edit, View } from '@/api/bsStackLog';
+  import { State, newState, rules } from './model';
+  import DatePicker from '@/components/DatePicker/datePicker.vue';
   import { useProjectSettingStore } from '@/store/modules/projectSetting';
   import { useMessage } from 'naive-ui';
   import { adaModalWidth } from '@/utils/hotgo';
@@ -120,9 +117,6 @@
   // 打开模态框
   function openModal(state: State) {
     showModal.value = true;
-
-    // 加载关系树选项
-    loadTreeOption();
 
     // 新增
     if (!state || state.id < 1) {
