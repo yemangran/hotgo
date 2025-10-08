@@ -23,16 +23,6 @@
           >
             <n-grid cols="1 s:1 m:1 l:1 xl:1 2xl:1" responsive="screen">
               <n-gi span="1">
-                <n-form-item label="用户Id" path="userId">
-                  <n-input-number placeholder="请输入用户Id" v-model:value="formValue.userId" />
-                </n-form-item>
-              </n-gi>
-              <n-gi span="1">
-                <n-form-item label="创建时间" path="createTime">
-                  <DatePicker v-model:formValue="formValue.createTime" type="datetime" />
-                </n-form-item>
-              </n-gi>
-              <n-gi span="1">
                 <n-form-item label="客户名称" path="customerName">
                   <n-input placeholder="请输入客户名称" v-model:value="formValue.customerName" />
                 </n-form-item>
@@ -63,38 +53,38 @@
                 </n-form-item>
               </n-gi>
               <n-gi span="1">
-                <n-form-item label="分配处理人Id" path="dispatchId">
+                <n-form-item label="处理人" path="dispatchId">
                   <n-select v-model:value="formValue.dispatchId" options="" />
                 </n-form-item>
               </n-gi>
               <n-gi span="1">
                 <n-form-item label="发起类型" path="sendType">
-                  <n-input-number placeholder="请输入发起类型" v-model:value="formValue.sendType" />
+                  <n-select v-model:value="formValue.sendType" :options="dict.getOptionUnRef('send_type')" />
                 </n-form-item>
               </n-gi>
               <n-gi span="1">
                 <n-form-item label="收取方式" path="acceptType">
-                  <n-input-number placeholder="请输入收取方式" v-model:value="formValue.acceptType" />
+                  <n-select v-model:value="formValue.acceptType" :options="dict.getOptionUnRef('accept_type')" />
                 </n-form-item>
               </n-gi>
               <n-gi span="1">
                 <n-form-item label="产品类型" path="productType">
-                  <n-input-number placeholder="请输入产品类型" v-model:value="formValue.productType" />
+                  <n-select v-model:value="formValue.productType" :options="dict.getOptionUnRef('product_type')" />
                 </n-form-item>
               </n-gi>
               <n-gi span="1">
                 <n-form-item label="工单状态" path="status">
-                  <n-select v-model:value="formValue.status" :options="dict.getOptionUnRef('sys_normal_disable')" />
+                  <n-select v-model:value="formValue.status" :options="dict.getOptionUnRef('work_status')" />
                 </n-form-item>
               </n-gi>
               <n-gi span="1">
-                <n-form-item label="建议处理方案(多选)" path="suggestSolution">
-                  <n-input placeholder="请输入建议处理方案(多选)" v-model:value="formValue.suggestSolution" />
+                <n-form-item label="建议处理方案" path="suggestSolution">
+                  <n-select v-model:value="formValue.suggestSolution" :options="dict.getOptionUnRef('biz_solution')" />
                 </n-form-item>
               </n-gi>
               <n-gi span="1">
-                <n-form-item label="实际处理方案(多选)" path="actualSolution">
-                  <n-input placeholder="请输入实际处理方案(多选)" v-model:value="formValue.actualSolution" />
+                <n-form-item label="实际处理方案" path="actualSolution">
+                  <n-select v-model:value="formValue.actualSolution" :options="dict.getOptionUnRef('biz_solution')" />
                 </n-form-item>
               </n-gi>
               <n-gi span="1">
@@ -104,7 +94,7 @@
               </n-gi>
               <n-gi span="1">
                 <n-form-item label="开票类型" path="invoiceType">
-                  <n-input-number placeholder="请输入开票类型" v-model:value="formValue.invoiceType" />
+                  <n-select v-model:value="formValue.invoiceType" :options="dict.getOptionUnRef('invoice_type')" />
                 </n-form-item>
               </n-gi>
               <n-gi span="1">
@@ -135,7 +125,6 @@
   import { useDictStore } from '@/store/modules/dict';
   import { Edit, View } from '@/api/bsWorkOrder';
   import { State, newState, rules } from './model';
-  import DatePicker from '@/components/DatePicker/datePicker.vue';
   import { useProjectSettingStore } from '@/store/modules/projectSetting';
   import { useMessage } from 'naive-ui';
   import { adaModalWidth } from '@/utils/hotgo';

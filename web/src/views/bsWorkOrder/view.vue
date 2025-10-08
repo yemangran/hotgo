@@ -6,18 +6,6 @@
           <n-descriptions label-placement="left" class="py-2" :column="1">
             <n-descriptions-item>
               <template #label>
-                用户Id
-              </template>
-              {{ formValue.userId }}
-            </n-descriptions-item>
-            <n-descriptions-item>
-              <template #label>
-                创建时间
-              </template>
-              {{ formValue.createTime }}
-            </n-descriptions-item>
-            <n-descriptions-item>
-              <template #label>
                 客户名称
               </template>
               {{ formValue.customerName }}
@@ -52,45 +40,40 @@
               </template>
               <span v-html="formValue.defectDescription"></span>
             </n-descriptions-item>
-            <n-descriptions-item label="分配处理人Id">
+            <n-descriptions-item label="处理人">
               <n-tag :type="dict.getType('%!s(<nil>)', formValue.dispatchId)" size="small" class="min-left-space">
                 {{ dict.getLabel('%!s(<nil>)', formValue.dispatchId) }}
               </n-tag>
             </n-descriptions-item>
-            <n-descriptions-item>
-              <template #label>
-                发起类型
-              </template>
-              {{ formValue.sendType }}
-            </n-descriptions-item>
-            <n-descriptions-item>
-              <template #label>
-                收取方式
-              </template>
-              {{ formValue.acceptType }}
-            </n-descriptions-item>
-            <n-descriptions-item>
-              <template #label>
-                产品类型
-              </template>
-              {{ formValue.productType }}
-            </n-descriptions-item>
-            <n-descriptions-item label="工单状态">
-              <n-tag :type="dict.getType('sys_normal_disable', formValue.status)" size="small" class="min-left-space">
-                {{ dict.getLabel('sys_normal_disable', formValue.status) }}
+            <n-descriptions-item label="发起类型">
+              <n-tag :type="dict.getType('send_type', formValue.sendType)" size="small" class="min-left-space">
+                {{ dict.getLabel('send_type', formValue.sendType) }}
               </n-tag>
             </n-descriptions-item>
-            <n-descriptions-item>
-              <template #label>
-                建议处理方案(多选)
-              </template>
-              {{ formValue.suggestSolution }}
+            <n-descriptions-item label="收取方式">
+              <n-tag :type="dict.getType('accept_type', formValue.acceptType)" size="small" class="min-left-space">
+                {{ dict.getLabel('accept_type', formValue.acceptType) }}
+              </n-tag>
             </n-descriptions-item>
-            <n-descriptions-item>
-              <template #label>
-                实际处理方案(多选)
-              </template>
-              {{ formValue.actualSolution }}
+            <n-descriptions-item label="产品类型">
+              <n-tag :type="dict.getType('product_type', formValue.productType)" size="small" class="min-left-space">
+                {{ dict.getLabel('product_type', formValue.productType) }}
+              </n-tag>
+            </n-descriptions-item>
+            <n-descriptions-item label="工单状态">
+              <n-tag :type="dict.getType('work_status', formValue.status)" size="small" class="min-left-space">
+                {{ dict.getLabel('work_status', formValue.status) }}
+              </n-tag>
+            </n-descriptions-item>
+            <n-descriptions-item label="建议处理方案">
+              <n-tag :type="dict.getType('biz_solution', formValue.suggestSolution)" size="small" class="min-left-space">
+                {{ dict.getLabel('biz_solution', formValue.suggestSolution) }}
+              </n-tag>
+            </n-descriptions-item>
+            <n-descriptions-item label="实际处理方案">
+              <n-tag :type="dict.getType('biz_solution', formValue.actualSolution)" size="small" class="min-left-space">
+                {{ dict.getLabel('biz_solution', formValue.actualSolution) }}
+              </n-tag>
             </n-descriptions-item>
             <n-descriptions-item>
               <template #label>
@@ -98,11 +81,10 @@
               </template>
               {{ formValue.totalMoney }}
             </n-descriptions-item>
-            <n-descriptions-item>
-              <template #label>
-                开票类型
-              </template>
-              {{ formValue.invoiceType }}
+            <n-descriptions-item label="开票类型">
+              <n-tag :type="dict.getType('invoice_type', formValue.invoiceType)" size="small" class="min-left-space">
+                {{ dict.getLabel('invoice_type', formValue.invoiceType) }}
+              </n-tag>
             </n-descriptions-item>
             <n-descriptions-item>
               <template #label>

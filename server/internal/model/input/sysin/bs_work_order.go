@@ -20,46 +20,42 @@ import (
 
 // BsWorkOrderUpdateFields 修改工单管理字段过滤
 type BsWorkOrderUpdateFields struct {
-	UserId             int         `json:"userId"             dc:"用户Id"`
-	CreateTime         *gtime.Time `json:"createTime"         dc:"创建时间"`
-	CustomerName       string      `json:"customerName"       dc:"客户名称"`
-	CustomerAddress    string      `json:"customerAddress"    dc:"客户地址"`
-	CustomerContact    string      `json:"customerContact"    dc:"客户联系方式"`
-	CustomerPerson     string      `json:"customerPerson"     dc:"客户对接人"`
-	ProblemDescription string      `json:"problemDescription" dc:"问题描述"`
-	DefectDescription  string      `json:"defectDescription"  dc:"检测描述"`
-	DispatchId         int         `json:"dispatchId"         dc:"分配处理人Id"`
-	SendType           int         `json:"sendType"           dc:"发起类型"`
-	AcceptType         int         `json:"acceptType"         dc:"收取方式"`
-	ProductType        int         `json:"productType"        dc:"产品类型"`
-	Status             int         `json:"status"             dc:"工单状态"`
-	SuggestSolution    string      `json:"suggestSolution"    dc:"建议处理方案(多选)"`
-	ActualSolution     string      `json:"actualSolution"     dc:"实际处理方案(多选)"`
-	TotalMoney         float64     `json:"totalMoney"         dc:"总金额"`
-	InvoiceType        int         `json:"invoiceType"        dc:"开票类型"`
-	Remark             string      `json:"remark"             dc:"备注"`
+	CustomerName       string  `json:"customerName"       dc:"客户名称"`
+	CustomerAddress    string  `json:"customerAddress"    dc:"客户地址"`
+	CustomerContact    string  `json:"customerContact"    dc:"客户联系方式"`
+	CustomerPerson     string  `json:"customerPerson"     dc:"客户对接人"`
+	ProblemDescription string  `json:"problemDescription" dc:"问题描述"`
+	DefectDescription  string  `json:"defectDescription"  dc:"检测描述"`
+	DispatchId         int     `json:"dispatchId"         dc:"处理人"`
+	SendType           int     `json:"sendType"           dc:"发起类型"`
+	AcceptType         int     `json:"acceptType"         dc:"收取方式"`
+	ProductType        int     `json:"productType"        dc:"产品类型"`
+	Status             int     `json:"status"             dc:"工单状态"`
+	SuggestSolution    string  `json:"suggestSolution"    dc:"建议处理方案"`
+	ActualSolution     string  `json:"actualSolution"     dc:"实际处理方案"`
+	TotalMoney         float64 `json:"totalMoney"         dc:"总金额"`
+	InvoiceType        int     `json:"invoiceType"        dc:"开票类型"`
+	Remark             string  `json:"remark"             dc:"备注"`
 }
 
 // BsWorkOrderInsertFields 新增工单管理字段过滤
 type BsWorkOrderInsertFields struct {
-	UserId             int         `json:"userId"             dc:"用户Id"`
-	CreateTime         *gtime.Time `json:"createTime"         dc:"创建时间"`
-	CustomerName       string      `json:"customerName"       dc:"客户名称"`
-	CustomerAddress    string      `json:"customerAddress"    dc:"客户地址"`
-	CustomerContact    string      `json:"customerContact"    dc:"客户联系方式"`
-	CustomerPerson     string      `json:"customerPerson"     dc:"客户对接人"`
-	ProblemDescription string      `json:"problemDescription" dc:"问题描述"`
-	DefectDescription  string      `json:"defectDescription"  dc:"检测描述"`
-	DispatchId         int         `json:"dispatchId"         dc:"分配处理人Id"`
-	SendType           int         `json:"sendType"           dc:"发起类型"`
-	AcceptType         int         `json:"acceptType"         dc:"收取方式"`
-	ProductType        int         `json:"productType"        dc:"产品类型"`
-	Status             int         `json:"status"             dc:"工单状态"`
-	SuggestSolution    string      `json:"suggestSolution"    dc:"建议处理方案(多选)"`
-	ActualSolution     string      `json:"actualSolution"     dc:"实际处理方案(多选)"`
-	TotalMoney         float64     `json:"totalMoney"         dc:"总金额"`
-	InvoiceType        int         `json:"invoiceType"        dc:"开票类型"`
-	Remark             string      `json:"remark"             dc:"备注"`
+	CustomerName       string  `json:"customerName"       dc:"客户名称"`
+	CustomerAddress    string  `json:"customerAddress"    dc:"客户地址"`
+	CustomerContact    string  `json:"customerContact"    dc:"客户联系方式"`
+	CustomerPerson     string  `json:"customerPerson"     dc:"客户对接人"`
+	ProblemDescription string  `json:"problemDescription" dc:"问题描述"`
+	DefectDescription  string  `json:"defectDescription"  dc:"检测描述"`
+	DispatchId         int     `json:"dispatchId"         dc:"处理人"`
+	SendType           int     `json:"sendType"           dc:"发起类型"`
+	AcceptType         int     `json:"acceptType"         dc:"收取方式"`
+	ProductType        int     `json:"productType"        dc:"产品类型"`
+	Status             int     `json:"status"             dc:"工单状态"`
+	SuggestSolution    string  `json:"suggestSolution"    dc:"建议处理方案"`
+	ActualSolution     string  `json:"actualSolution"     dc:"实际处理方案"`
+	TotalMoney         float64 `json:"totalMoney"         dc:"总金额"`
+	InvoiceType        int     `json:"invoiceType"        dc:"开票类型"`
+	Remark             string  `json:"remark"             dc:"备注"`
 }
 
 // BsWorkOrderEditInp 修改/新增工单管理
@@ -68,13 +64,18 @@ type BsWorkOrderEditInp struct {
 }
 
 func (in *BsWorkOrderEditInp) Filter(ctx context.Context) (err error) {
-	// 验证用户Id
-	if err := g.Validator().Rules("required").Data(in.UserId).Messages("用户Id不能为空").Run(ctx); err != nil {
+	// 验证客户名称
+	if err := g.Validator().Rules("required").Data(in.CustomerName).Messages("客户名称不能为空").Run(ctx); err != nil {
 		return err.Current()
 	}
 
-	// 验证客户名称
-	if err := g.Validator().Rules("required").Data(in.CustomerName).Messages("客户名称不能为空").Run(ctx); err != nil {
+	// 验证客户地址
+	if err := g.Validator().Rules("required").Data(in.CustomerAddress).Messages("客户地址不能为空").Run(ctx); err != nil {
+		return err.Current()
+	}
+
+	// 验证客户联系方式
+	if err := g.Validator().Rules("required").Data(in.CustomerContact).Messages("客户联系方式不能为空").Run(ctx); err != nil {
 		return err.Current()
 	}
 
@@ -82,9 +83,15 @@ func (in *BsWorkOrderEditInp) Filter(ctx context.Context) (err error) {
 	if err := g.Validator().Rules("required").Data(in.SendType).Messages("发起类型不能为空").Run(ctx); err != nil {
 		return err.Current()
 	}
+	if err := g.Validator().Rules("in:1,2").Data(in.SendType).Messages("发起类型值不正确").Run(ctx); err != nil {
+		return err.Current()
+	}
 
 	// 验证收取方式
 	if err := g.Validator().Rules("required").Data(in.AcceptType).Messages("收取方式不能为空").Run(ctx); err != nil {
+		return err.Current()
+	}
+	if err := g.Validator().Rules("in:1,2,3").Data(in.AcceptType).Messages("收取方式值不正确").Run(ctx); err != nil {
 		return err.Current()
 	}
 
@@ -92,17 +99,23 @@ func (in *BsWorkOrderEditInp) Filter(ctx context.Context) (err error) {
 	if err := g.Validator().Rules("required").Data(in.ProductType).Messages("产品类型不能为空").Run(ctx); err != nil {
 		return err.Current()
 	}
+	if err := g.Validator().Rules("in:1,2,3,4,5,6").Data(in.ProductType).Messages("产品类型值不正确").Run(ctx); err != nil {
+		return err.Current()
+	}
 
 	// 验证工单状态
 	if err := g.Validator().Rules("required").Data(in.Status).Messages("工单状态不能为空").Run(ctx); err != nil {
 		return err.Current()
 	}
-	if err := g.Validator().Rules("in:1,2").Data(in.Status).Messages("工单状态值不正确").Run(ctx); err != nil {
+	if err := g.Validator().Rules("in:1,2,3").Data(in.Status).Messages("工单状态值不正确").Run(ctx); err != nil {
 		return err.Current()
 	}
 
 	// 验证开票类型
 	if err := g.Validator().Rules("required").Data(in.InvoiceType).Messages("开票类型不能为空").Run(ctx); err != nil {
+		return err.Current()
+	}
+	if err := g.Validator().Rules("in:1,2,3").Data(in.InvoiceType).Messages("开票类型值不正确").Run(ctx); err != nil {
 		return err.Current()
 	}
 
@@ -138,11 +151,15 @@ type BsWorkOrderViewModel struct {
 // BsWorkOrderListInp 获取工单管理列表
 type BsWorkOrderListInp struct {
 	form.PageReq
-	CustomerName    string `json:"customerName"    dc:"客户名称"`
-	CustomerAddress string `json:"customerAddress" dc:"客户地址"`
-	CustomerContact string `json:"customerContact" dc:"客户联系方式"`
-	CustomerPerson  string `json:"customerPerson"  dc:"客户对接人"`
-	Status          int    `json:"status"          dc:"工单状态"`
+	CreateTime      []*gtime.Time `json:"createTime"      dc:"创建时间"`
+	CustomerName    string        `json:"customerName"    dc:"客户名称"`
+	CustomerAddress string        `json:"customerAddress" dc:"客户地址"`
+	CustomerContact string        `json:"customerContact" dc:"客户联系方式"`
+	CustomerPerson  string        `json:"customerPerson"  dc:"客户对接人"`
+	SendType        int           `json:"sendType"        dc:"发起类型"`
+	ProductType     int           `json:"productType"     dc:"产品类型"`
+	Status          int           `json:"status"          dc:"工单状态"`
+	InvoiceType     int           `json:"invoiceType"     dc:"开票类型"`
 }
 
 func (in *BsWorkOrderListInp) Filter(ctx context.Context) (err error) {
@@ -175,8 +192,8 @@ type BsWorkOrderExportModel struct {
 	AcceptType      int         `json:"acceptType"      dc:"收取方式"`
 	ProductType     int         `json:"productType"     dc:"产品类型"`
 	Status          int         `json:"status"          dc:"工单状态"`
-	SuggestSolution string      `json:"suggestSolution" dc:"建议处理方案(多选)"`
-	ActualSolution  string      `json:"actualSolution"  dc:"实际处理方案(多选)"`
+	SuggestSolution string      `json:"suggestSolution" dc:"建议处理方案"`
+	ActualSolution  string      `json:"actualSolution"  dc:"实际处理方案"`
 	TotalMoney      float64     `json:"totalMoney"      dc:"总金额"`
 	InvoiceType     int         `json:"invoiceType"     dc:"开票类型"`
 }

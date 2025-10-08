@@ -46,6 +46,11 @@ func (s *sSysBsWorkOrder) List(ctx context.Context, in *sysin.BsWorkOrderListInp
 	// 字段过滤
 	mod = mod.Fields(sysin.BsWorkOrderListModel{})
 
+	// 查询创建时间
+	if len(in.CreateTime) == 2 {
+		mod = mod.WhereBetween(dao.BsWorkOrder.Columns().CreateTime, in.CreateTime[0], in.CreateTime[1])
+	}
+
 	// 查询客户名称
 	if in.CustomerName != "" {
 		mod = mod.WhereLike(dao.BsWorkOrder.Columns().CustomerName, in.CustomerName)
@@ -66,9 +71,24 @@ func (s *sSysBsWorkOrder) List(ctx context.Context, in *sysin.BsWorkOrderListInp
 		mod = mod.WhereLike(dao.BsWorkOrder.Columns().CustomerPerson, in.CustomerPerson)
 	}
 
+	// 查询发起类型
+	if in.SendType > 0 {
+		mod = mod.Where(dao.BsWorkOrder.Columns().SendType, in.SendType)
+	}
+
+	// 查询产品类型
+	if in.ProductType > 0 {
+		mod = mod.Where(dao.BsWorkOrder.Columns().ProductType, in.ProductType)
+	}
+
 	// 查询工单状态
 	if in.Status > 0 {
 		mod = mod.Where(dao.BsWorkOrder.Columns().Status, in.Status)
+	}
+
+	// 查询开票类型
+	if in.InvoiceType > 0 {
+		mod = mod.Where(dao.BsWorkOrder.Columns().InvoiceType, in.InvoiceType)
 	}
 
 	// 分页

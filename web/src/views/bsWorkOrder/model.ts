@@ -1,6 +1,7 @@
 import { h, ref } from 'vue';
 import { cloneDeep } from 'lodash-es';
 import { FormSchema } from '@/components/Form';
+import { defShortcuts } from '@/utils/dateUtil';
 import { renderOptionTag } from '@/utils';
 import { useDictStore } from '@/store/modules/dict';
 
@@ -46,17 +47,23 @@ export function newState(state: State | Record<string, any> | null): State {
 
 // 表单验证规则
 export const rules = {
-  userId: {
-    required: true,
-    trigger: ['blur', 'input'],
-    type: 'number',
-    message: '请输入用户Id',
-  },
   customerName: {
     required: true,
     trigger: ['blur', 'input'],
     type: 'string',
     message: '请输入客户名称',
+  },
+  customerAddress: {
+    required: true,
+    trigger: ['blur', 'input'],
+    type: 'string',
+    message: '请输入客户地址',
+  },
+  customerContact: {
+    required: true,
+    trigger: ['blur', 'input'],
+    type: 'string',
+    message: '请输入客户联系方式',
   },
   sendType: {
     required: true,
@@ -92,6 +99,19 @@ export const rules = {
 
 // 表格搜索表单
 export const schemas = ref<FormSchema[]>([
+  {
+    field: 'createTime',
+    component: 'NDatePicker',
+    label: '创建时间',
+    componentProps: {
+      type: 'datetime',
+      clearable: true,
+      shortcuts: defShortcuts(),
+      onUpdateValue: (e: any) => {
+        console.log(e);
+      },
+    },
+  },
   {
     field: 'customerName',
     component: 'NInput',
@@ -137,13 +157,52 @@ export const schemas = ref<FormSchema[]>([
     },
   },
   {
+    field: 'sendType',
+    component: 'NSelect',
+    label: '发起类型',
+    defaultValue: null,
+    componentProps: {
+      placeholder: '请选择发起类型',
+      options: dict.getOption('send_type'),
+      onUpdateValue: (e: any) => {
+        console.log(e);
+      },
+    },
+  },
+  {
+    field: 'productType',
+    component: 'NSelect',
+    label: '产品类型',
+    defaultValue: null,
+    componentProps: {
+      placeholder: '请选择产品类型',
+      options: dict.getOption('product_type'),
+      onUpdateValue: (e: any) => {
+        console.log(e);
+      },
+    },
+  },
+  {
     field: 'status',
     component: 'NSelect',
     label: '工单状态',
     defaultValue: null,
     componentProps: {
       placeholder: '请选择工单状态',
-      options: dict.getOption('sys_normal_disable'),
+      options: dict.getOption('work_status'),
+      onUpdateValue: (e: any) => {
+        console.log(e);
+      },
+    },
+  },
+  {
+    field: 'invoiceType',
+    component: 'NSelect',
+    label: '开票类型',
+    defaultValue: null,
+    componentProps: {
+      placeholder: '请选择开票类型',
+      options: dict.getOption('invoice_type'),
       onUpdateValue: (e: any) => {
         console.log(e);
       },
@@ -188,18 +247,27 @@ export const columns = [
     key: 'sendType',
     align: 'left',
     width: -1,
+    render(row: State) {
+      return renderOptionTag('send_type', row.sendType);
+    },
   },
   {
     title: '收取方式',
     key: 'acceptType',
     align: 'left',
     width: -1,
+    render(row: State) {
+      return renderOptionTag('accept_type', row.acceptType);
+    },
   },
   {
     title: '产品类型',
     key: 'productType',
     align: 'left',
     width: -1,
+    render(row: State) {
+      return renderOptionTag('product_type', row.productType);
+    },
   },
   {
     title: '工单状态',
@@ -207,7 +275,7 @@ export const columns = [
     align: 'left',
     width: -1,
     render(row: State) {
-      return renderOptionTag('sys_normal_disable', row.status);
+      return renderOptionTag('work_status', row.status);
     },
   },
   {
@@ -221,10 +289,13 @@ export const columns = [
     key: 'invoiceType',
     align: 'left',
     width: -1,
+    render(row: State) {
+      return renderOptionTag('invoice_type', row.invoiceType);
+    },
   },
 ];
 
 // 加载字典数据选项
 export function loadOptions() {
-  dict.loadOptions(['sys_normal_disable']);
+  dict.loadOptions(['accept_type', 'work_status', 'invoice_type', 'send_type', 'product_type', 'biz_solution']);
 }
