@@ -10,7 +10,9 @@ import (
 	"context"
 	"fmt"
 	"hotgo/internal/dao"
+	"hotgo/internal/library/contexts"
 	"hotgo/internal/library/hgorm/handler"
+	"hotgo/internal/model/entity"
 	"hotgo/internal/model/input/form"
 	"hotgo/internal/model/input/sysin"
 	"hotgo/internal/service"
@@ -135,6 +137,9 @@ func (s *sSysBsWorkOrder) Export(ctx context.Context, in *sysin.BsWorkOrderListI
 // Edit 修改/新增工单管理
 func (s *sSysBsWorkOrder) Edit(ctx context.Context, in *sysin.BsWorkOrderEditInp) (err error) {
 	return g.DB().Transaction(ctx, func(ctx context.Context, tx gdb.TX) (err error) {
+		var member = contexts.GetUser(ctx)
+		fmt.Printf("当前访问用户信息：%+v\n", member)
+		in.UserId = int(member.Id)
 
 		// 修改
 		if in.Id > 0 {
@@ -169,9 +174,16 @@ func (s *sSysBsWorkOrder) Delete(ctx context.Context, in *sysin.BsWorkOrderDelet
 // View 获取工单管理指定信息
 func (s *sSysBsWorkOrder) View(ctx context.Context, in *sysin.BsWorkOrderViewInp) (res *sysin.BsWorkOrderViewModel, err error) {
 	if err = s.Model(ctx).WherePri(in.Id).Scan(&res); err != nil {
-		err = gerror.Wrap(err, "获取工单管理信息，请稍后重试！")
+		err = gerror.Wrap(err, "获取工单管理信息失败，请稍后重试！")
 		return
 	}
+	//查询用户信息
+	member := entity.AdminMember{}
+	if err = dao.AdminMember.Ctx(ctx).Where("id", res.DispatchId).Scan(&member); err != nil {
+		err = gerror.Wrap(err, "获取处理人信息失败，请稍后重试！")
+		return
+	}
+	res.DispatchName = member.Username
 	return
 }
 

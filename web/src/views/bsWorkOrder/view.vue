@@ -41,8 +41,8 @@
               <span v-html="formValue.defectDescription"></span>
             </n-descriptions-item>
             <n-descriptions-item label="处理人">
-              <n-tag :type="dict.getType('%!s(<nil>)', formValue.dispatchId)" size="small" class="min-left-space">
-                {{ dict.getLabel('%!s(<nil>)', formValue.dispatchId) }}
+              <n-tag type="primary" size="small" class="min-left-space">
+                {{ formValue.dispatchName }}
               </n-tag>
             </n-descriptions-item>
             <n-descriptions-item label="发起类型">
@@ -66,14 +66,18 @@
               </n-tag>
             </n-descriptions-item>
             <n-descriptions-item label="建议处理方案">
-              <n-tag :type="dict.getType('biz_solution', formValue.suggestSolution)" size="small" class="min-left-space">
-                {{ dict.getLabel('biz_solution', formValue.suggestSolution) }}
-              </n-tag>
+              <template v-for="(item, key) in formValue.suggestSolution" :key="key">
+                <n-tag :type="dict.getType('biz_solution', item)" size="small" class="min-left-space">
+                  {{ dict.getLabel('biz_solution', item) }}
+                </n-tag>
+              </template>
             </n-descriptions-item>
             <n-descriptions-item label="实际处理方案">
-              <n-tag :type="dict.getType('biz_solution', formValue.actualSolution)" size="small" class="min-left-space">
-                {{ dict.getLabel('biz_solution', formValue.actualSolution) }}
-              </n-tag>
+              <template v-for="(item, key) in formValue.actualSolution" :key="key">
+                <n-tag :type="dict.getType('biz_solution', item)" size="small" class="min-left-space">
+                  {{ dict.getLabel('biz_solution', item) }}
+                </n-tag>
+              </template>
             </n-descriptions-item>
             <n-descriptions-item>
               <template #label>
@@ -100,50 +104,52 @@
 </template>
 
 <script lang="ts" setup>
-  import { computed, ref } from 'vue';
-  import { useMessage } from 'naive-ui';
-  import { View } from '@/api/bsWorkOrder';
-  import { State, newState } from './model';
-  import { adaModalWidth } from '@/utils/hotgo';
-  import { getFileExt } from '@/utils/urlUtils';
-  import { useDictStore } from '@/store/modules/dict';
+import { computed, ref } from 'vue';
+import { useMessage } from 'naive-ui';
+import { View } from '@/api/bsWorkOrder';
+import { State, newState } from './model';
+import { adaModalWidth } from '@/utils/hotgo';
+import { getFileExt } from '@/utils/urlUtils';
+import { useDictStore } from '@/store/modules/dict';
 
-  const message = useMessage();
-  const dict = useDictStore();
-  const loading = ref(false);
-  const showModal = ref(false);
-  const formValue = ref(newState(null));
-  const dialogWidth = computed(() => {
-    return adaModalWidth(580);
-  });
-  const fileAvatarCSS = computed(() => {
-    return {
-      '--n-merged-size': `var(--n-avatar-size-override, 80px)`,
-      '--n-font-size': `18px`,
-    };
-  });
+const message = useMessage();
+const dict = useDictStore();
+const loading = ref(false);
+const showModal = ref(false);
+const formValue = ref(newState(null));
+const dialogWidth = computed(() => {
+  return adaModalWidth(580);
+});
+const fileAvatarCSS = computed(() => {
+  return {
+    '--n-merged-size': `var(--n-avatar-size-override, 80px)`,
+    '--n-font-size': `18px`,
+  };
+});
 
-  // 下载
-  function download(url: string) {
-    window.open(url);
-  }
+// 下载
+function download(url: string) {
+  window.open(url);
+}
 
-  // 打开模态框
-  function openModal(state: State) {
-    showModal.value = true;
-    loading.value = true;
-    View({ id: state.id })
-      .then((res) => {
-        formValue.value = res;
-      })
-      .finally(() => {
-        loading.value = false;
-      });
-  }
+// 打开模态框
+function openModal(state: State) {
+  showModal.value = true;
+  loading.value = true;
+  View({ id: state.id })
+    .then((res) => {
+      console.log('工单详情', res);
 
-  defineExpose({
-    openModal,
-  });
+      formValue.value = res;
+    })
+    .finally(() => {
+      loading.value = false;
+    });
+}
+
+defineExpose({
+  openModal,
+});
 </script>
 
 <style lang="less" scoped></style>

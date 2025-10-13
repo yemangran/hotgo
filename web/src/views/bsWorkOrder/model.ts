@@ -4,30 +4,31 @@ import { FormSchema } from '@/components/Form';
 import { defShortcuts } from '@/utils/dateUtil';
 import { renderOptionTag } from '@/utils';
 import { useDictStore } from '@/store/modules/dict';
+import { title } from 'node:process';
 
 const dict = useDictStore();
 
 export class State {
-
-  public id = 0;//主键
-  public userId = 0;//用户Id
-  public createTime = "";//创建时间
-  public customerName = "";//客户名称
-  public customerAddress = "";//客户地址
-  public customerContact = "";//客户联系方式
-  public customerPerson = "";//客户对接人
-  public problemDescription = "";//问题描述
-  public defectDescription = "";//检测描述
-  public dispatchId = 0;//分配处理人Id
-  public sendType = 0;//发起类型
-  public acceptType = 0;//收取方式
-  public productType = 0;//产品类型
-  public status = 1;//工单状态
-  public suggestSolution = "";//建议处理方案(多选)
-  public actualSolution = "";//实际处理方案(多选)
-  public totalMoney = 0;//总金额
-  public invoiceType = 1;//开票类型
-  public remark = "";//备注
+  public id = 0; //主键
+  public userId = 0; //用户Id
+  public createTime = ''; //创建时间
+  public customerName = ''; //客户名称
+  public customerAddress = ''; //客户地址
+  public customerContact = ''; //客户联系方式
+  public customerPerson = ''; //客户对接人
+  public problemDescription = ''; //问题描述
+  public defectDescription = ''; //检测描述
+  public dispatchId = 0; //分配处理人Id
+  public sendType = 0; //发起类型
+  public acceptType = 0; //收取方式
+  public productType = 0; //产品类型
+  public status = 1; //工单状态
+  public suggestSolution = ''; //建议处理方案(多选)
+  public actualSolution = ''; //实际处理方案(多选)
+  public totalMoney = 0; //总金额
+  public invoiceType = 1; //开票类型
+  public remark = ''; //备注
+  public dispatchName = ''; //
   constructor(state?: Partial<State>) {
     if (state) {
       Object.assign(this, state);
@@ -213,8 +214,8 @@ export const schemas = ref<FormSchema[]>([
 // 表格列
 export const columns = [
   {
-    title: '创建时间',
-    key: 'createTime',
+    title: '工单号',
+    key: 'id',
     align: 'left',
     width: -1,
   },
@@ -225,19 +226,31 @@ export const columns = [
     width: -1,
   },
   {
-    title: '客户地址',
-    key: 'customerAddress',
+    title: '产品类型',
+    key: 'productType',
+    align: 'left',
+    width: -1,
+    render(row: State) {
+      return renderOptionTag('product_type', row.productType);
+    },
+  },
+  {
+    title: '工单状态',
+    key: 'status',
+    align: 'left',
+    width: -1,
+    render(row: State) {
+      return renderOptionTag('work_status', row.status);
+    },
+  },
+  {
+    title: '问题描述',
+    key: 'problemDescription',
     align: 'left',
     width: -1,
   },
   {
-    title: '客户联系方式',
-    key: 'customerContact',
-    align: 'left',
-    width: -1,
-  },
-  {
-    title: '客户对接人',
+    title: '对接人',
     key: 'customerPerson',
     align: 'left',
     width: -1,
@@ -261,24 +274,6 @@ export const columns = [
     },
   },
   {
-    title: '产品类型',
-    key: 'productType',
-    align: 'left',
-    width: -1,
-    render(row: State) {
-      return renderOptionTag('product_type', row.productType);
-    },
-  },
-  {
-    title: '工单状态',
-    key: 'status',
-    align: 'left',
-    width: -1,
-    render(row: State) {
-      return renderOptionTag('work_status', row.status);
-    },
-  },
-  {
     title: '总金额',
     key: 'totalMoney',
     align: 'left',
@@ -293,9 +288,22 @@ export const columns = [
       return renderOptionTag('invoice_type', row.invoiceType);
     },
   },
+  {
+    title: '创建时间',
+    key: 'createTime',
+    align: 'left',
+    width: 160,
+  },
 ];
 
 // 加载字典数据选项
 export function loadOptions() {
-  dict.loadOptions(['accept_type', 'work_status', 'invoice_type', 'send_type', 'product_type', 'biz_solution']);
+  dict.loadOptions([
+    'accept_type',
+    'work_status',
+    'invoice_type',
+    'send_type',
+    'product_type',
+    'biz_solution',
+  ]);
 }

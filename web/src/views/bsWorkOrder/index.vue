@@ -54,7 +54,7 @@
   import { useDictStore } from '@/store/modules/dict';
   import { List, Export, Delete, Status } from '@/api/bsWorkOrder';
   import { PlusOutlined, ExportOutlined, DeleteOutlined } from '@vicons/antd';
-  import { columns, schemas, loadOptions } from './model';
+  import { State, columns, schemas, loadOptions } from './model';
   import { adaTableScrollX } from '@/utils/hotgo';
   import Edit from './edit.vue';
   import View from './view.vue';
@@ -70,7 +70,7 @@
   const checkedIds = ref([]);
 
   const actionColumn = reactive({
-    width: 288,
+    width: 210,
     title: '操作',
     key: 'action',
     fixed: 'right',
@@ -82,23 +82,6 @@
             label: '编辑',
             onClick: handleEdit.bind(null, record),
             auth: ['/bsWorkOrder/edit'],
-          },
-
-          {
-            label: '禁用',
-            onClick: handleStatus.bind(null, record, 2),
-            ifShow: () => {
-              return record.status === 1;
-            },
-            auth: ['/bsWorkOrder/status'],
-          },
-          {
-            label: '启用',
-            onClick: handleStatus.bind(null, record, 1),
-            ifShow: () => {
-              return record.status === 2;
-            },
-            auth: ['/bsWorkOrder/status'],
           },
           {
             label: '删除',

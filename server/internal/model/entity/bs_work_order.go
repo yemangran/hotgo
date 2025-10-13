@@ -24,8 +24,8 @@ type BsWorkOrder struct {
 	AcceptType         int         `json:"acceptType"         orm:"accept_type"         description:"收取方式"`
 	ProductType        int         `json:"productType"        orm:"product_type"        description:"产品类型"`
 	Status             int         `json:"status"             orm:"status"              description:"工单状态"`
-	SuggestSolution    string      `json:"suggestSolution"    orm:"suggest_solution"    description:"建议处理方案(多选)"`
-	ActualSolution     string      `json:"actualSolution"     orm:"actual_solution"     description:"实际处理方案(多选)"`
+	SuggestSolution    []int       `json:"suggestSolution"    orm:"suggest_solution"    description:"建议处理方案(多选)"`
+	ActualSolution     []int       `json:"actualSolution"     orm:"actual_solution"     description:"实际处理方案(多选)"`
 	TotalMoney         float64     `json:"totalMoney"         orm:"total_money"         description:"总金额"`
 	InvoiceType        int         `json:"invoiceType"        orm:"invoice_type"        description:"开票类型"`
 	Remark             string      `json:"remark"             orm:"remark"              description:"备注"`

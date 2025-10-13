@@ -9,7 +9,7 @@
             "program": "${workspaceFolder}/server",
             "env": {
                 "GF_GCFG_FILE": "manifest/config/config.yaml",
-                "GF_LOG_LEVEL": "debug"
+                "GF_LOG_LEVEL": "info"
             },
             "args": [],
             "console": "integratedTerminal"

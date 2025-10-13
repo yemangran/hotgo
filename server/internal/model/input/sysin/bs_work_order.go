@@ -146,6 +146,7 @@ func (in *BsWorkOrderViewInp) Filter(ctx context.Context) (err error) {
 
 type BsWorkOrderViewModel struct {
 	entity.BsWorkOrder
+	DispatchName string `json:"dispatchName" dc:"处理人"`
 }
 
 // BsWorkOrderListInp 获取工单管理列表
@@ -167,18 +168,19 @@ func (in *BsWorkOrderListInp) Filter(ctx context.Context) (err error) {
 }
 
 type BsWorkOrderListModel struct {
-	Id              int64       `json:"id"              dc:"主键"`
-	CreateTime      *gtime.Time `json:"createTime"      dc:"创建时间"`
-	CustomerName    string      `json:"customerName"    dc:"客户名称"`
-	CustomerAddress string      `json:"customerAddress" dc:"客户地址"`
-	CustomerContact string      `json:"customerContact" dc:"客户联系方式"`
-	CustomerPerson  string      `json:"customerPerson"  dc:"客户对接人"`
-	SendType        int         `json:"sendType"        dc:"发起类型"`
-	AcceptType      int         `json:"acceptType"      dc:"收取方式"`
-	ProductType     int         `json:"productType"     dc:"产品类型"`
-	Status          int         `json:"status"          dc:"工单状态"`
-	TotalMoney      float64     `json:"totalMoney"      dc:"总金额"`
-	InvoiceType     int         `json:"invoiceType"     dc:"开票类型"`
+	Id                 int64       `json:"id"              dc:"主键"`
+	CreateTime         *gtime.Time `json:"createTime"      dc:"创建时间"`
+	CustomerName       string      `json:"customerName"    dc:"客户名称"`
+	CustomerAddress    string      `json:"customerAddress" dc:"客户地址"`
+	CustomerContact    string      `json:"customerContact" dc:"客户联系方式"`
+	CustomerPerson     string      `json:"customerPerson"  dc:"客户对接人"`
+	ProblemDescription string      `json:"problemDescription" dc:"问题描述"`
+	SendType           int         `json:"sendType"        dc:"发起类型"`
+	AcceptType         int         `json:"acceptType"      dc:"收取方式"`
+	ProductType        int         `json:"productType"     dc:"产品类型"`
+	Status             int         `json:"status"          dc:"工单状态"`
+	TotalMoney         float64     `json:"totalMoney"      dc:"总金额"`
+	InvoiceType        int         `json:"invoiceType"     dc:"开票类型"`
 }
 
 // BsWorkOrderExportModel 导出工单管理
