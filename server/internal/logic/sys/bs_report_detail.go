@@ -32,8 +32,14 @@ func (s *sSysBsReportDetail) List(ctx context.Context, in *sysin.BsReportDetailL
 	if in.Id > 0 {
 		mod = mod.Where(dao.BsReportDetail.Columns().Id, in.Id)
 	}
+	// 查询工单id
+	if in.WorkOrderId > 0 {
+		mod = mod.Where(dao.BsReportDetail.Columns().WorkOrderId, in.WorkOrderId)
+	}
 	// 排序
-	mod = mod.OrderDesc(dao.BsReportDetail.Columns().Id)
+	mod = mod.Order(dao.BsReportDetail.Columns().Id)
+	//分页
+	mod = mod.Page(in.Page, in.PerPage)
 	// 查询数据
 	if err = mod.ScanAndCount(&list, &totalCount, false); err != nil {
 		err = gerror.Wrap(err, "获取工单明细列表失败")

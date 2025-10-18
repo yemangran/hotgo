@@ -223,6 +223,7 @@ export interface RowData {
   handleType: string;
   price: number;
   remark: string;
+  status: string;
 }
 // interface OnUpdateValue {
 //   (value: string | number | undefined): void;
@@ -281,7 +282,9 @@ export function createProcessColumns(
           onUpdateValue(v: string | number | undefined, option: CascaderOption) {
             row.serviceId = v as number;
             row.price = option.price as number;
+            row.status = '' as string;
           },
+          status: row.status,
           options: serviceOptions,
           labelField: 'name',
           valueField: 'id',

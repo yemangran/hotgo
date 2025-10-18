@@ -4,7 +4,7 @@
       transform-origin="center" :style="{
         width: dialogWidth,
       }">
-      <n-scrollbar style="max-height: 87vh" class="pr-5">
+      <n-scrollbar ref="scrollbarRef" style="max-height: 87vh" class="pr-5">
         <n-spin :show="loading" description="请稍候...">
           <n-divider title-placement="left">
             客户信息
@@ -92,14 +92,15 @@
 
 <script setup lang="ts">
 import { adaModalWidth } from '@/utils/hotgo';
-import { ref, computed } from 'vue';
+import { ref, computed, nextTick } from 'vue';
 import { State, newState, rules, createProcessColumns, RowData } from './model';
 import { useProjectSettingStore } from '@/store/modules/projectSetting';
 import { View, Process } from '@/api/bsWorkOrder';
 import { useDictStore } from '@/store/modules/dict';
 import { AddOutline as AddIcon } from '@vicons/ionicons5'
 import { NIcon, useDialog } from 'naive-ui'
-import { List } from '@/api/bsService';
+import { List as ServiceList } from '@/api/bsService';
+import { List as ReportList, Delete as ReportDelete } from '@/api/bsReportDetail';
 import { convertListToTree } from '@/utils/hotgo';
 
 const dialog = useDialog();
@@ -107,6 +108,7 @@ const dict = useDictStore();
 const settingStore = useProjectSettingStore();
 const emit = defineEmits(['success']);
 const formRef = ref<any>(null);
+const scrollbarRef = ref<any>(null);
 const loading = ref(false);
 const showModal = ref(false);
 const formValue = ref<State>(newState(null));
@@ -118,7 +120,8 @@ const serviceOptions = ref<any[]>([]);
 const formBtnLoading = ref(false);
 
 async function init() {
-  const res = await List({});
+  //获取全部的服务
+  const res = await ServiceList({});
   serviceOptions.value = convertListToTree(res.list, 'id', 'pid', true);
 }
 init()
@@ -130,17 +133,18 @@ function closeForm() {
 async function confirmForm() {
   // 表单验证
   await formRef.value?.validate();
-  
+
   // 校验明细数据
   if (!processData.value || processData.value.length === 0) {
     window['$message'].warning('请至少添加一条处理明细');
     return;
   }
-  
+
   // 校验明细项目是否完整
   for (let i = 0; i < processData.value.length; i++) {
     const item = processData.value[i];
     if (!item.serviceId) {
+      item.status = "error"
       window['$message'].warning(`请选择第${i + 1}条明细的服务项目`);
       return;
     }
@@ -156,7 +160,7 @@ async function confirmForm() {
 
     // 调用后端接口
     await Process(submitData);
-    
+
     window['$message'].success('工单处理成功');
     closeForm();
     // 通知父组件刷新列表
@@ -169,14 +173,28 @@ async function confirmForm() {
 }
 
 // 删除处理明细（带确认提示）
-function deleteService(row: RowData, index: number) {
+async function deleteService(row: RowData, index: number) {
   dialog.warning({
     title: '确认删除',
     content: '确定要删除这条明细吗',
     positiveText: '确定',
     negativeText: '取消',
-    onPositiveClick: () => {
-      processData.value.splice(index, 1);
+    onPositiveClick: async () => {
+      // 如果有id，说明是数据库中的数据，需要调用接口删除
+      if (row.id) {
+        try {
+          await ReportDelete({ id: row.id });
+          window['$message'].success('删除成功');
+          // 从数组中移除
+          processData.value.splice(index, 1);
+        } catch (error) {
+          console.error('删除失败:', error);
+          window['$message'].error('删除失败');
+        }
+      } else {
+        // 没有id，说明是临时添加的，直接从数组中移除
+        processData.value.splice(index, 1);
+      }
     },
   });
 }
@@ -188,13 +206,15 @@ const processColumns = computed(() => createProcessColumns(deleteService, servic
 async function openModal(state: State) {
   // initUserList()
   showModal.value = true;
-  //todo)) 这里从后端获取数据
-  processData.value = [];
 
   // 编辑
   loading.value = true;
   const res = await View({ id: state.id })
   formValue.value = res;
+
+  //获取该工单的明细服务项目
+  const rdRes = await ReportList({ workOrderId: formValue.value.id, pagination: false });
+  processData.value = rdRes.list
   loading.value = false;
 
   // // 新增
@@ -223,6 +243,10 @@ function addService() {
     handleType: '',
     price: 0,
     remark: '',
+  });
+  nextTick(() => {
+    // 新增明细后滚动到最底部
+    scrollbarRef.value.scrollBy({ top: 100 });
   });
 }
 
