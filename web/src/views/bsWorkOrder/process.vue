@@ -95,16 +95,18 @@ import { adaModalWidth } from '@/utils/hotgo';
 import { ref, computed } from 'vue';
 import { State, newState, rules, createProcessColumns, RowData } from './model';
 import { useProjectSettingStore } from '@/store/modules/projectSetting';
-import { View } from '@/api/bsWorkOrder';
+import { View, Process } from '@/api/bsWorkOrder';
 import { useDictStore } from '@/store/modules/dict';
 import { AddOutline as AddIcon } from '@vicons/ionicons5'
 import { NIcon, useDialog } from 'naive-ui'
 import { List } from '@/api/bsService';
-import { adaTableScrollX, convertListToTree } from '@/utils/hotgo';
+import { convertListToTree } from '@/utils/hotgo';
 
 const dialog = useDialog();
 const dict = useDictStore();
 const settingStore = useProjectSettingStore();
+const emit = defineEmits(['success']);
+const formRef = ref<any>(null);
 const loading = ref(false);
 const showModal = ref(false);
 const formValue = ref<State>(newState(null));
@@ -125,7 +127,46 @@ function closeForm() {
   showModal.value = false;
 }
 
-function confirmForm() { }
+async function confirmForm() {
+  // 表单验证
+  await formRef.value?.validate();
+  
+  // 校验明细数据
+  if (!processData.value || processData.value.length === 0) {
+    window['$message'].warning('请至少添加一条处理明细');
+    return;
+  }
+  
+  // 校验明细项目是否完整
+  for (let i = 0; i < processData.value.length; i++) {
+    const item = processData.value[i];
+    if (!item.serviceId) {
+      window['$message'].warning(`请选择第${i + 1}条明细的服务项目`);
+      return;
+    }
+  }
+
+  formBtnLoading.value = true;
+  try {
+    // 构建提交数据
+    const submitData = {
+      ...formValue.value,
+      serviceList: processData.value,
+    };
+
+    // 调用后端接口
+    await Process(submitData);
+    
+    window['$message'].success('工单处理成功');
+    closeForm();
+    // 通知父组件刷新列表
+    emit('success');
+  } catch (error) {
+    console.error('工单处理失败:', error);
+  } finally {
+    formBtnLoading.value = false;
+  }
+}
 
 // 删除处理明细（带确认提示）
 function deleteService(row: RowData, index: number) {

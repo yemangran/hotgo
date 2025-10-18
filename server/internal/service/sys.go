@@ -131,6 +131,8 @@ type (
 		View(ctx context.Context, in *sysin.BsWorkOrderViewInp) (res *sysin.BsWorkOrderViewModel, err error)
 		// Status 更新工单管理状态
 		Status(ctx context.Context, in *sysin.BsWorkOrderStatusInp) (err error)
+		// Process 工单处理
+		Process(ctx context.Context, in *sysin.BsWorkOrderProcessInp) (err error)
 	}
 	ISysConfig interface {
 		// InitConfig 初始化系统配置

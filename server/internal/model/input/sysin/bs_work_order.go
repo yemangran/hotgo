@@ -63,6 +63,12 @@ type BsWorkOrderEditInp struct {
 	entity.BsWorkOrder
 }
 
+// BsWorkOrderProcessInp 工单处理
+type BsWorkOrderProcessInp struct {
+	entity.BsWorkOrder
+	ServiceList []entity.BsReportDetail `json:"serviceList" dc:"服务项目列表"`
+}
+
 func (in *BsWorkOrderEditInp) Filter(ctx context.Context) (err error) {
 	// 验证客户名称
 	if err := g.Validator().Rules("required").Data(in.CustomerName).Messages("客户名称不能为空").Run(ctx); err != nil {

@@ -19,6 +19,12 @@ var (
 
 type cBsWorkOrder struct{}
 
+// 处理工单
+func (c *cBsWorkOrder) Process(ctx context.Context, req *bsworkorder.ProcessReq) (res *bsworkorder.ProcessRes, err error) {
+	err = service.SysBsWorkOrder().Process(ctx, &req.BsWorkOrderProcessInp)
+	return
+}
+
 // List 查看工单管理列表
 func (c *cBsWorkOrder) List(ctx context.Context, req *bsworkorder.ListReq) (res *bsworkorder.ListRes, err error) {
 	list, totalCount, err := service.SysBsWorkOrder().List(ctx, &req.BsWorkOrderListInp)

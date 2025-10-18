@@ -49,3 +49,12 @@ export function View(params) {
 export function Export(params) {
   jumpExport('/bsWorkOrder/export', params);
 }
+
+// 处理工单
+export function Process(params) {
+  return http.request({
+    url: '/bsWorkOrder/process',
+    method: 'POST',
+    params,
+  });
+}

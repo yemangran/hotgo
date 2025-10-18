@@ -41,6 +41,15 @@ func (s *sSysBsWorkOrder) Model(ctx context.Context, option ...*handler.Option) 
 	return handler.Model(dao.BsWorkOrder.Ctx(ctx), option...)
 }
 
+// Process implements service.ISysBsWorkOrder.
+func (s *sSysBsWorkOrder) Process(ctx context.Context, in *sysin.BsWorkOrderProcessInp) (err error) {
+	fmt.Println("+++++++++++++++++++++++++++++++++++++++++")
+	fmt.Println("当前工单处理输入参数：")
+	fmt.Print(in)
+	fmt.Println("+++++++++++++++++++++++++++++++++++++++++")
+	return
+}
+
 // List 获取工单管理列表
 func (s *sSysBsWorkOrder) List(ctx context.Context, in *sysin.BsWorkOrderListInp) (list []*sysin.BsWorkOrderListModel, totalCount int, err error) {
 	mod := s.Model(ctx)

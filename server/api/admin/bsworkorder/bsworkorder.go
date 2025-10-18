@@ -65,3 +65,11 @@ type StatusReq struct {
 }
 
 type StatusRes struct{}
+
+// ProcessReq 处理工单
+type ProcessReq struct {
+	g.Meta `path:"/bsWorkOrder/process" method:"post" tags:"工单管理" summary:"处理工单"`
+	sysin.BsWorkOrderProcessInp
+}
+
+type ProcessRes struct{}
