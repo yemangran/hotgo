@@ -4,7 +4,7 @@ import { FormSchema } from '@/components/Form';
 import { defShortcuts } from '@/utils/dateUtil';
 import { renderOptionTag } from '@/utils';
 import { useDictStore } from '@/store/modules/dict';
-import { title } from 'node:process';
+import { CascaderOption, NButton, NCascader, NInput, NInputNumber, NTreeSelect } from 'naive-ui';
 
 const dict = useDictStore();
 
@@ -48,6 +48,12 @@ export function newState(state: State | Record<string, any> | null): State {
 
 // 表单验证规则
 export const rules = {
+  defectDescription: {
+    required: true,
+    trigger: ['blur', 'input'],
+    type: 'string',
+    message: '请输入检测描述',
+  },
   customerName: {
     required: true,
     trigger: ['blur', 'input'],
@@ -210,6 +216,149 @@ export const schemas = ref<FormSchema[]>([
     },
   },
 ]);
+export interface RowData {
+  id: number;
+  key: number;
+  serviceId: number;
+  handleType: string;
+  price: number;
+  remark: string;
+}
+// interface OnUpdateValue {
+//   (value: string | number | undefined): void;
+// }
+// const ShowOrEdit = defineComponent({
+//   props: {
+//     value: [String, Number],
+//     onUpdateValue: [Function, Array] as PropType<OnUpdateValue>,
+//     placeholder: String,
+//     data: Array as PropType<RowData[]>,
+//     component: {
+//       type: Object as PropType<Component>,
+//       default: () => NInput,
+//     },
+//   },
+//   setup(props) {
+//     const isEdit = ref(false);
+//     const insRef = ref<InputInst | null>(null);
+//     const inputValue = ref(props.value);
+//     function handleChange() {
+//       props.onUpdateValue?.(inputValue.value);
+//       isEdit.value = false;
+//     }
+//     return () =>
+//       h(
+//         'div',
+//         {
+//           style: 'min-height: 22px',
+//         },
+//         h(props.component as Component, {
+//           ref: insRef,
+//           value: inputValue.value,
+//           onUpdateValue: (v: string | number | undefined) => {
+//             inputValue.value = v;
+//           },
+//           onBlur: handleChange,
+//           placeholder: props.placeholder,
+//         })
+//       );
+//   },
+// });
+export function createProcessColumns(
+  onDelete: (row: RowData, index: number) => void,
+  serviceOptions: any[]
+) {
+  return [
+    {
+      title: '服务项目',
+      key: 'name',
+      align: 'center',
+      width: 200,
+      render(row: RowData) {
+        // const index = getDataIndex(row.key);
+        return h(NCascader, {
+          value: row.serviceId,
+          onUpdateValue(v: string | number | undefined, option: CascaderOption) {
+            row.serviceId = v as number;
+            row.price = option.price as number;
+          },
+          options: serviceOptions,
+          labelField: 'name',
+          valueField: 'id',
+          showPath: false,
+          checkStrategy: 'child',
+          placeholder: '选择服务项目',
+        });
+      },
+    },
+    {
+      title: '处理方式',
+      key: 'handleType',
+      align: 'center',
+      width: -1,
+      render(row: RowData) {
+        // const index = getDataIndex(row.key);
+        return h(NInput, {
+          value: row.handleType,
+          onUpdateValue(v: string | number | undefined) {
+            row.handleType = v as string;
+          },
+          placeholder: '请输入处理方式',
+        });
+      },
+    },
+    {
+      title: '金额',
+      key: 'price',
+      align: 'center',
+      width: -1,
+      render(row: RowData) {
+        console.log('row', row);
+        // const index = getDataIndex(row.key);
+        return h(NInputNumber, {
+          min: 0,
+          value: row.price,
+          precision: 2,
+          onUpdateValue(v: string | number | undefined) {
+            row.price = v as number;
+          },
+        });
+      },
+    },
+    {
+      title: '备注',
+      key: 'remark',
+      align: 'center',
+      width: -1,
+      render(row: RowData) {
+        // const index = getDataIndex(row.key);
+        return h(NInput, {
+          value: row.remark,
+          onUpdateValue(v: string | number | undefined) {
+            row.remark = v as string;
+          },
+        });
+      },
+    },
+    {
+      title: '操作',
+      key: 'action',
+      align: 'center',
+      width: -1,
+      render(row: RowData, index: number) {
+        return h(
+          NButton,
+          {
+            tertiary: true,
+            type: 'error',
+            onClick: () => onDelete(row, index),
+          },
+          () => '删除'
+        );
+      },
+    },
+  ];
+}
 
 // 表格列
 export const columns = [

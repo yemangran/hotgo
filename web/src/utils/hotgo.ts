@@ -121,12 +121,12 @@ export function timeFix() {
   return hour < 9
     ? '早上好'
     : hour <= 11
-    ? '上午好'
-    : hour <= 13
-    ? '中午好'
-    : hour < 20
-    ? '下午好'
-    : '晚上好';
+      ? '上午好'
+      : hour <= 13
+        ? '中午好'
+        : hour < 20
+          ? '下午好'
+          : '晚上好';
 }
 
 // 随机浅色
@@ -144,7 +144,12 @@ export function rdmLightRgbColor(): string {
 }
 
 // 将列表数据转为树形数据
-export function convertListToTree(list: any[], idField = 'id', pidField = 'pid') {
+export function convertListToTree(
+  list: any[],
+  idField = 'id',
+  pidField = 'pid',
+  removeEmptyChildren = false
+) {
   if (!list || list.length === 0) {
     return [];
   }
@@ -167,7 +172,26 @@ export function convertListToTree(list: any[], idField = 'id', pidField = 'pid')
       map[item[pidField]].children.push(map[item[idField]]);
     }
   });
-  return list.filter((item) => item[pidField] === min[pidField]).map((item) => map[item[idField]]);
+
+  const tree = list
+    .filter((item) => item[pidField] === min[pidField])
+    .map((item) => map[item[idField]]);
+
+  // 如果需要删除空的 children 属性
+  if (removeEmptyChildren) {
+    const removeEmpty = (nodes: any[]) => {
+      nodes.forEach((node) => {
+        if (node.children && node.children.length > 0) {
+          removeEmpty(node.children);
+        } else {
+          delete node.children;
+        }
+      });
+    };
+    removeEmpty(tree);
+  }
+
+  return tree;
 }
 
 // 从树选项中获取所有key

@@ -6,14 +6,17 @@
       </n-card>
     </div>
     <n-card :bordered="false" class="proCard">
-      <BasicForm  ref="searchFormRef" @register="register" @submit="reloadTable" @reset="reloadTable" @keyup.enter="reloadTable">
+      <BasicForm ref="searchFormRef" @register="register" @submit="reloadTable" @reset="reloadTable"
+        @keyup.enter="reloadTable">
         <template #statusSlot="{ model, field }">
           <n-input v-model:value="model[field]" />
         </template>
       </BasicForm>
-      <BasicTable  ref="actionRef" openChecked :columns="columns" :request="loadDataTable" :row-key="(row) => row.id" :actionColumn="actionColumn" :scroll-x="scrollX" :resizeHeightOffset="-10000"  :checked-row-keys="checkedIds" @update:checked-row-keys="handleOnCheckedRow">
+      <BasicTable ref="actionRef" openChecked :columns="columns" :request="loadDataTable" :row-key="(row) => row.id"
+        :actionColumn="actionColumn" :scroll-x="scrollX" :resizeHeightOffset="-10000" :checked-row-keys="checkedIds"
+        @update:checked-row-keys="handleOnCheckedRow">
         <template #tableTitle>
-          <n-button type="primary"  @click="addTable" class="min-left-space" v-if="hasPermission(['/bsWorkOrder/edit'])">
+          <n-button type="primary" @click="addTable" class="min-left-space" v-if="hasPermission(['/bsWorkOrder/edit'])">
             <template #icon>
               <n-icon>
                 <PlusOutlined />
@@ -21,7 +24,8 @@
             </template>
             添加
           </n-button>
-          <n-button type="error" @click="handleBatchDelete" class="min-left-space" v-if="hasPermission(['/bsWorkOrder/delete'])">
+          <n-button type="error" @click="handleBatchDelete" class="min-left-space"
+            v-if="hasPermission(['/bsWorkOrder/delete'])">
             <template #icon>
               <n-icon>
                 <DeleteOutlined />
@@ -29,7 +33,8 @@
             </template>
             批量删除
           </n-button>
-          <n-button type="primary" @click="handleExport" class="min-left-space" v-if="hasPermission(['/bsWorkOrder/export'])">
+          <n-button @click="handleExport" class="min-left-space"
+            v-if="hasPermission(['/bsWorkOrder/export'])">
             <template #icon>
               <n-icon>
                 <ExportOutlined />
@@ -42,167 +47,181 @@
     </n-card>
     <Edit ref="editRef" @reloadTable="reloadTable" />
     <View ref="viewRef" />
+    <Process ref="processRef" />
   </div>
 </template>
 
 <script lang="ts" setup>
-  import { h, reactive, ref, computed, onMounted } from 'vue';
-  import { useDialog, useMessage } from 'naive-ui';
-  import { BasicTable, TableAction } from '@/components/Table';
-  import { BasicForm, useForm } from '@/components/Form/index';
-  import { usePermission } from '@/hooks/web/usePermission';
-  import { useDictStore } from '@/store/modules/dict';
-  import { List, Export, Delete, Status } from '@/api/bsWorkOrder';
-  import { PlusOutlined, ExportOutlined, DeleteOutlined } from '@vicons/antd';
-  import { State, columns, schemas, loadOptions } from './model';
-  import { adaTableScrollX } from '@/utils/hotgo';
-  import Edit from './edit.vue';
-  import View from './view.vue';
+import { h, reactive, ref, computed, onMounted } from 'vue';
+import { useDialog, useMessage } from 'naive-ui';
+import { BasicTable, TableAction } from '@/components/Table';
+import { BasicForm, useForm } from '@/components/Form/index';
+import { usePermission } from '@/hooks/web/usePermission';
+import { useDictStore } from '@/store/modules/dict';
+import { List, Export, Delete, Status } from '@/api/bsWorkOrder';
+import { PlusOutlined, ExportOutlined, DeleteOutlined } from '@vicons/antd';
+import { State, columns, schemas, loadOptions } from './model';
+import { adaTableScrollX } from '@/utils/hotgo';
+import Edit from './edit.vue';
+import View from './view.vue';
+import Process from './process.vue';
 
-  const dict = useDictStore();
-  const dialog = useDialog();
-  const message = useMessage();
-  const { hasPermission } = usePermission();
-  const actionRef = ref();
-  const searchFormRef = ref<any>({});
-  const editRef = ref();
-  const viewRef = ref();
-  const checkedIds = ref([]);
+const dict = useDictStore();
+const dialog = useDialog();
+const message = useMessage();
+const { hasPermission } = usePermission();
+const actionRef = ref();
+const searchFormRef = ref<any>({});
+const editRef = ref();
+const viewRef = ref();
+const processRef = ref();
+const checkedIds = ref([]);
 
-  const actionColumn = reactive({
-    width: 210,
-    title: '操作',
-    key: 'action',
-    fixed: 'right',
-    render(record: State) {
-      return h(TableAction as any, {
-        style: 'button',
-        actions: [
-          {
-            label: '编辑',
-            onClick: handleEdit.bind(null, record),
-            auth: ['/bsWorkOrder/edit'],
-          },
-          {
-            label: '删除',
-            onClick: handleDelete.bind(null, record),
-            auth: ['/bsWorkOrder/delete'],
-          },
-        ],
-        dropDownActions: [
-          {
-            label: '查看详情',
-            key: 'view',
-            auth: ['/bsWorkOrder/view'],
-          },
-        ],
-        select: (key) => {
-          if (key === 'view') {
-            return handleView(record);
-          }
+const actionColumn = reactive({
+  width: 270,
+  title: '操作',
+  key: 'action',
+  fixed: 'right',
+  render(record: State) {
+    return h(TableAction as any, {
+      style: 'button',
+      actions: [
+        {
+          label: '处理',
+          type: 'success',
+          onClick: handleProcess.bind(null, record),
+          auth: ['/bsWorkOrder/process'],
         },
+        {
+          label: '编辑',
+          onClick: handleEdit.bind(null, record),
+          auth: ['/bsWorkOrder/edit'],
+        },
+        {
+          label: '删除',
+          onClick: handleDelete.bind(null, record),
+          auth: ['/bsWorkOrder/delete'],
+        },
+      ],
+      dropDownActions: [
+        {
+          label: '查看详情',
+          key: 'view',
+          auth: ['/bsWorkOrder/view'],
+        },
+      ],
+      select: (key) => {
+        if (key === 'view') {
+          return handleView(record);
+        }
+      },
+    });
+  },
+});
+
+const scrollX = computed(() => {
+  return adaTableScrollX(columns, actionColumn.width);
+});
+
+const [register, { }] = useForm({
+  gridProps: { cols: '1 s:1 m:2 l:3 xl:4 2xl:4' },
+  labelWidth: 80,
+  schemas,
+});
+
+// 加载表格数据
+const loadDataTable = async (res) => {
+  return await List({ ...searchFormRef.value?.formModel, ...res });
+};
+
+// 更新选中的行
+function handleOnCheckedRow(rowKeys) {
+  checkedIds.value = rowKeys;
+}
+
+// 重新加载表格数据
+function reloadTable() {
+  actionRef.value?.reload();
+}
+
+// 添加数据
+function addTable() {
+  editRef.value.openModal(null);
+}
+
+//处理工单
+function handleProcess(record: Recordable) {
+  processRef.value.openModal(record);
+}
+
+// 编辑数据
+function handleEdit(record: Recordable) {
+  editRef.value.openModal(record);
+}
+
+// 查看详情
+function handleView(record: Recordable) {
+  viewRef.value.openModal(record);
+}
+
+// 单个删除
+function handleDelete(record: Recordable) {
+  dialog.warning({
+    title: '警告',
+    content: '你确定要删除？',
+    positiveText: '确定',
+    negativeText: '取消',
+    onPositiveClick: () => {
+      Delete(record).then((_res) => {
+        message.success('删除成功');
+        reloadTable();
       });
     },
   });
+}
 
-  const scrollX = computed(() => {
-    return adaTableScrollX(columns, actionColumn.width);
-  });
-
-  const [register, {}] = useForm({
-    gridProps: { cols: '1 s:1 m:2 l:3 xl:4 2xl:4' },
-    labelWidth: 80,
-    schemas,
-  });
-
-  // 加载表格数据
-  const loadDataTable = async (res) => {
-    return await List({ ...searchFormRef.value?.formModel, ...res });
-  };
-
-  // 更新选中的行
-  function handleOnCheckedRow(rowKeys) {
-    checkedIds.value = rowKeys;
+// 批量删除
+function handleBatchDelete() {
+  if (checkedIds.value.length < 1) {
+    message.error('请至少选择一项要删除的数据');
+    return;
   }
 
-  // 重新加载表格数据
-  function reloadTable() {
-    actionRef.value?.reload();
-  }
-
-  // 添加数据
-  function addTable() {
-    editRef.value.openModal(null);
-  }
-
-  // 编辑数据
-  function handleEdit(record: Recordable) {
-    editRef.value.openModal(record);
-  }
-
-  // 查看详情
-  function handleView(record: Recordable) {
-    viewRef.value.openModal(record);
-  }
-
-  // 单个删除
-  function handleDelete(record: Recordable) {
-    dialog.warning({
-      title: '警告',
-      content: '你确定要删除？',
-      positiveText: '确定',
-      negativeText: '取消',
-      onPositiveClick: () => {
-        Delete(record).then((_res) => {
-          message.success('删除成功');
-          reloadTable();
-        });
-      },
-    });
-  }
-
-  // 批量删除
-  function handleBatchDelete() {
-    if (checkedIds.value.length < 1){
-      message.error('请至少选择一项要删除的数据');
-      return;
-    }
-
-    dialog.warning({
-      title: '警告',
-      content: '你确定要批量删除？',
-      positiveText: '确定',
-      negativeText: '取消',
-      onPositiveClick: () => {
-        Delete({ id: checkedIds.value }).then((_res) => {
-          checkedIds.value = [];
-          message.success('删除成功');
-          reloadTable();
-        });
-      },
-    });
-  }
-
-  // 导出
-  function handleExport() {
-    message.loading('正在导出列表...', { duration: 1200 });
-    Export(searchFormRef.value?.formModel);
-  }
-
-  // 修改状态
-  function handleStatus(record: Recordable, status: number) {
-    Status({ id: record.id, status: status }).then((_res) => {
-      message.success('设为' + dict.getLabel('sys_normal_disable', status) + '成功');
-      setTimeout(() => {
+  dialog.warning({
+    title: '警告',
+    content: '你确定要批量删除？',
+    positiveText: '确定',
+    negativeText: '取消',
+    onPositiveClick: () => {
+      Delete({ id: checkedIds.value }).then((_res) => {
+        checkedIds.value = [];
+        message.success('删除成功');
         reloadTable();
       });
-    });
-  }
-
-  onMounted(() => {
-    loadOptions();
-
+    },
   });
+}
+
+// 导出
+function handleExport() {
+  message.loading('正在导出列表...', { duration: 1200 });
+  Export(searchFormRef.value?.formModel);
+}
+
+// 修改状态
+function handleStatus(record: Recordable, status: number) {
+  Status({ id: record.id, status: status }).then((_res) => {
+    message.success('设为' + dict.getLabel('sys_normal_disable', status) + '成功');
+    setTimeout(() => {
+      reloadTable();
+    });
+  });
+}
+
+onMounted(() => {
+  loadOptions();
+
+});
 </script>
 
 <style lang="less" scoped></style>
