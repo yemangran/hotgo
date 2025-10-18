@@ -7,12 +7,18 @@
             "request": "launch",
             "mode": "auto",
             "program": "${workspaceFolder}/server",
+            "cwd": "${workspaceFolder}/server",
             "env": {
                 "GF_GCFG_FILE": "manifest/config/config.yaml",
                 "GF_LOG_LEVEL": "info"
             },
             "args": [],
-            "console": "integratedTerminal"
+            "showLog": true,
+            "trace": "verbose",
+            "stopOnEntry": false,
+            "console": "integratedTerminal",
+            "preLaunchTask": "",
+            "postDebugTask": ""
         }
     ]
 }

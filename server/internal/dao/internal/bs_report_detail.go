@@ -26,6 +26,7 @@ type BsReportDetailColumns struct {
 	WorkOrderId string // 工单id
 	Remark      string // 备注
 	HandleType  string // 处理方式
+	Price       string // 金额
 }
 
 // bsReportDetailColumns holds the columns for the table hg_bs_report_detail.
@@ -35,6 +36,7 @@ var bsReportDetailColumns = BsReportDetailColumns{
 	WorkOrderId: "work_order_id",
 	Remark:      "remark",
 	HandleType:  "handle_type",
+	Price:       "price",
 }
 
 // NewBsReportDetailDao creates and returns a new DAO object for table data access.

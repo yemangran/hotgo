@@ -11,9 +11,10 @@ import (
 // BsReportDetail is the golang structure of table hg_bs_report_detail for DAO operations like Where/Data.
 type BsReportDetail struct {
 	g.Meta      `orm:"table:hg_bs_report_detail, do:true"`
-	Id          interface{} // 主键
-	ServiceId   interface{} // 服务id
-	WorkOrderId interface{} // 工单id
-	Remark      interface{} // 备注
-	HandleType  interface{} // 处理方式
+	Id          any // 主键
+	ServiceId   any // 服务id
+	WorkOrderId any // 工单id
+	Remark      any // 备注
+	HandleType  any // 处理方式
+	Price       any // 金额
 }

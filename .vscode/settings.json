@@ -1,0 +1,26 @@
+{
+    "go.useLanguageServer": true,
+    "go.languageServerFlags": [
+        "-rpc.trace"
+    ],
+    "gopls": {
+        "ui.semanticTokens": true,
+        "ui.codelenses": {
+            "generate": true,
+            "test": true,
+            "gc_details": true
+        }
+    },
+    "go.toolsManagement.autoUpdate": true,
+    "go.delveConfig": {
+        "dlvLoadConfig": {
+            "followPointers": true,
+            "maxVariableRecurse": 1,
+            "maxStringLen": 120,
+            "maxArrayValues": 64,
+            "maxStructFields": -1
+        },
+        "apiVersion": 2,
+        "showGlobalVariables": true
+    }
+}
