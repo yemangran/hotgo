@@ -41,13 +41,100 @@ func (s *sSysBsWorkOrder) Model(ctx context.Context, option ...*handler.Option) 
 	return handler.Model(dao.BsWorkOrder.Ctx(ctx), option...)
 }
 
-// Process implements service.ISysBsWorkOrder.
+// Process 处理工单
 func (s *sSysBsWorkOrder) Process(ctx context.Context, in *sysin.BsWorkOrderProcessInp) (err error) {
-	fmt.Println("+++++++++++++++++++++++++++++++++++++++++")
-	fmt.Println("当前工单处理输入参数：")
-	fmt.Print(in)
-	fmt.Println("+++++++++++++++++++++++++++++++++++++++++")
-	return
+	return g.DB().Transaction(ctx, func(ctx context.Context, tx gdb.TX) (err error) {
+		// 1. 验证工单ID
+		if in.Id <= 0 {
+			return gerror.New("工单ID不能为空")
+		}
+
+		// 2. 验证明细数据
+		if len(in.ServiceList) == 0 {
+			return gerror.New("工单明细不能为空")
+		}
+
+		// 3. 更新工单主表信息
+		if _, err = tx.Ctx(ctx).Model(dao.BsWorkOrder.Table()).
+			Fields(sysin.BsWorkOrderUpdateFields{}).
+			WherePri(in.Id).
+			Data(in.BsWorkOrder).
+			Update(); err != nil {
+			return gerror.Wrap(err, "更新工单信息失败，请稍后重试！")
+		}
+
+		// 4. 计算总金额，并分类明细数据
+		var (
+			totalMoney    float64
+			insertDetails []g.Map                 // 待新增的明细
+			updateDetails []entity.BsReportDetail // 待更新的明细
+		)
+
+		for _, detail := range in.ServiceList {
+			// 统计总金额
+			totalMoney += detail.Price
+
+			// 确保 workOrderId 正确
+			detail.WorkOrderId = int(in.Id)
+
+			// 根据是否有 ID 分类
+			if detail.Id > 0 {
+				// 添加到更新列表
+				updateDetails = append(updateDetails, detail)
+			} else {
+				// 添加到新增列表
+				insertDetails = append(insertDetails, g.Map{
+					dao.BsReportDetail.Columns().ServiceId:   detail.ServiceId,
+					dao.BsReportDetail.Columns().WorkOrderId: detail.WorkOrderId,
+					dao.BsReportDetail.Columns().HandleType:  detail.HandleType,
+					dao.BsReportDetail.Columns().Price:       detail.Price,
+					dao.BsReportDetail.Columns().Remark:      detail.Remark,
+				})
+			}
+		}
+
+		// 5. 批量新增明细（如果有）
+		if len(insertDetails) > 0 {
+			if _, err = tx.Ctx(ctx).Model(dao.BsReportDetail.Table()).
+				Data(insertDetails).
+				Insert(); err != nil {
+				return gerror.Wrap(err, "批量新增工单明细失败")
+			}
+		}
+
+		// 6. 更新明细（逐条更新）
+		for _, detail := range updateDetails {
+			if _, err = tx.Ctx(ctx).Model(dao.BsReportDetail.Table()).
+				WherePri(detail.Id).
+				Data(g.Map{
+					dao.BsReportDetail.Columns().ServiceId:   detail.ServiceId,
+					dao.BsReportDetail.Columns().WorkOrderId: detail.WorkOrderId,
+					dao.BsReportDetail.Columns().HandleType:  detail.HandleType,
+					dao.BsReportDetail.Columns().Price:       detail.Price,
+					dao.BsReportDetail.Columns().Remark:      detail.Remark,
+				}).
+				Update(); err != nil {
+				return gerror.Wrapf(err, "更新工单明细失败，明细ID:%d", detail.Id)
+			}
+		}
+
+		// 7. 更新工单总金额和状态
+		//工单状态 1待分派 2处理中 3已完结
+		if _, err = tx.Ctx(ctx).Model(dao.BsWorkOrder.Table()).
+			WherePri(in.Id).
+			Data(g.Map{
+				dao.BsWorkOrder.Columns().TotalMoney: totalMoney,
+				dao.BsWorkOrder.Columns().Status:     3, // 假设 2 表示已处理，根据实际业务调整
+			}).
+			Update(); err != nil {
+			return gerror.Wrap(err, "更新工单总金额失败")
+		}
+
+		g.Log().Infof(ctx, "工单处理成功，工单ID:%d, 总金额:%.2f, 新增明细:%d条, 更新明细:%d条",
+			in.Id, totalMoney, len(insertDetails), len(updateDetails))
+
+		return nil
+	})
 }
 
 // List 获取工单管理列表

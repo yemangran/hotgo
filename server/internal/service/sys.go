@@ -88,6 +88,14 @@ type (
 		// View 获取仓库物品指定信息
 		View(ctx context.Context, in *sysin.BsItemViewInp) (res *sysin.BsItemViewModel, err error)
 	}
+	ISysBsReportDetail interface {
+		// Model 工单明细ORM模型
+		Model(ctx context.Context, option ...*handler.Option) *gdb.Model
+		// List 获取工单明细列表
+		List(ctx context.Context, in *sysin.BsReportDetailListInp) (list []*sysin.BsReportDetailListModel, totalCount int, err error)
+		// Delete 删除工单明细
+		Delete(ctx context.Context, in *sysin.BsReportDetailDeleteInp) (err error)
+	}
 	ISysBsService interface {
 		// Model 服务项目ORM模型
 		Model(ctx context.Context, option ...*handler.Option) *gdb.Model
@@ -472,6 +480,7 @@ var (
 	localSysBlacklist      ISysBlacklist
 	localSysBsItem         ISysBsItem
 	localSysBsService      ISysBsService
+	localSysBsReportDetail ISysBsReportDetail
 	localSysBsStackLog     ISysBsStackLog
 	localSysBsWorkOrder    ISysBsWorkOrder
 	localSysConfig         ISysConfig
@@ -557,6 +566,17 @@ func SysBsService() ISysBsService {
 
 func RegisterSysBsService(i ISysBsService) {
 	localSysBsService = i
+}
+
+func SysBsReportDetail() ISysBsReportDetail {
+	if localSysBsReportDetail == nil {
+		panic("implement not found for interface ISysBsReportDetail, forgot register?")
+	}
+	return localSysBsReportDetail
+}
+
+func RegisterSysBsReportDetail(i ISysBsReportDetail) {
+	localSysBsReportDetail = i
 }
 
 func SysBsStackLog() ISysBsStackLog {
