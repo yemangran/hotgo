@@ -36,6 +36,8 @@ type BsWorkOrderUpdateFields struct {
 	TotalMoney         float64 `json:"totalMoney"         dc:"总金额"`
 	InvoiceType        int     `json:"invoiceType"        dc:"开票类型"`
 	Remark             string  `json:"remark"             dc:"备注"`
+	DeviceModel        string  `json:"deviceModel"        dc:"设备型号"`
+	ComponentName      string  `json:"componentName"      dc:"部件名称"`
 }
 
 // BsWorkOrderInsertFields 新增工单管理字段过滤
@@ -56,6 +58,8 @@ type BsWorkOrderInsertFields struct {
 	TotalMoney         float64 `json:"totalMoney"         dc:"总金额"`
 	InvoiceType        int     `json:"invoiceType"        dc:"开票类型"`
 	Remark             string  `json:"remark"             dc:"备注"`
+	DeviceModel        string  `json:"deviceModel"        dc:"设备型号"`
+	ComponentName      string  `json:"componentName"      dc:"部件名称"`
 }
 
 // BsWorkOrderEditInp 修改/新增工单管理
@@ -167,6 +171,8 @@ type BsWorkOrderListInp struct {
 	ProductType     int           `json:"productType"     dc:"产品类型"`
 	Status          int           `json:"status"          dc:"工单状态"`
 	InvoiceType     int           `json:"invoiceType"     dc:"开票类型"`
+	DeviceModel     string        `json:"deviceModel"     dc:"设备型号"`
+	ComponentName   string        `json:"componentName"   dc:"部件名称"`
 }
 
 func (in *BsWorkOrderListInp) Filter(ctx context.Context) (err error) {

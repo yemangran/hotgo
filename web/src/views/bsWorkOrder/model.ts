@@ -28,6 +28,8 @@ export class State {
   public totalMoney = 0; //总金额
   public invoiceType = 1; //开票类型
   public remark = ''; //备注
+  public deviceModel = ''; //设备型号
+  public componentName = ''; //部件名称
   public dispatchName = ''; //
   constructor(state?: Partial<State>) {
     if (state) {
@@ -106,19 +108,19 @@ export const rules = {
 
 // 表格搜索表单
 export const schemas = ref<FormSchema[]>([
-  {
-    field: 'createTime',
-    component: 'NDatePicker',
-    label: '创建时间',
-    componentProps: {
-      type: 'datetime',
-      clearable: true,
-      shortcuts: defShortcuts(),
-      onUpdateValue: (e: any) => {
-        console.log(e);
-      },
-    },
-  },
+  // TODO 这里需要范围{
+  //   field: 'createTime',
+  //   component: 'NDatePicker',
+  //   label: '创建时间',
+  //   componentProps: {
+  //     type: 'datetime',
+  //     clearable: true,
+  //     shortcuts: defShortcuts(),
+  //     onUpdateValue: (e: any) => {
+  //       console.log(e);
+  //     },
+  //   },
+  // },
   {
     field: 'customerName',
     component: 'NInput',
@@ -144,9 +146,9 @@ export const schemas = ref<FormSchema[]>([
   {
     field: 'customerContact',
     component: 'NInput',
-    label: '客户联系方式',
+    label: '联系方式',
     componentProps: {
-      placeholder: '请输入客户联系方式',
+      placeholder: '请输入联系方式',
       onUpdateValue: (e: any) => {
         console.log(e);
       },
@@ -155,9 +157,20 @@ export const schemas = ref<FormSchema[]>([
   {
     field: 'customerPerson',
     component: 'NInput',
-    label: '客户对接人',
+    label: '对接人',
     componentProps: {
-      placeholder: '请输入客户对接人',
+      placeholder: '请输入对接人',
+      onUpdateValue: (e: any) => {
+        console.log(e);
+      },
+    },
+  },
+  {
+    field: 'deviceModel',
+    component: 'NInput',
+    label: '设备型号',
+    componentProps: {
+      placeholder: '请输入设备型号',
       onUpdateValue: (e: any) => {
         console.log(e);
       },

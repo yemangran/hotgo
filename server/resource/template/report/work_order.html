@@ -1,225 +1,259 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-    <meta charset="UTF-8">
-    <title>工单报告 - {{.CustomerName}}</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        /* 去掉页眉页脚 */
-        @page {
-            margin: 10mm;
-            size: A4;
-        }
-        
-        @media print {
-            body {
-                padding: 0;
-                background: white;
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
-            }
-            .report-container {
-                box-shadow: none;
-                padding: 15px;
-            }
-            /* 避免分页 */
-            .section {
-                page-break-inside: avoid;
-            }
-            table {
-                page-break-inside: avoid;
-            }
-        }
-        
-        body {
-            font-family: 'Microsoft YaHei', Arial, sans-serif;
-            padding: 20px;
-            background: #f5f5f5;
-            font-size: 12px;
-        }
-        .report-container {
-            max-width: 210mm;
-            margin: 0 auto;
-            background: white;
-            padding: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        .report-header {
-            text-align: center;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #1890ff;
-        }
-        .report-title {
-            font-size: 20px;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 5px;
-        }
-        .report-subtitle {
-            font-size: 11px;
-            color: #666;
-        }
-        .section {
-            margin-bottom: 15px;
-        }
-        .section-title {
-            font-size: 14px;
-            font-weight: bold;
-            color: #333;
-            padding: 6px 0;
-            border-left: 3px solid #1890ff;
-            padding-left: 10px;
-            margin-bottom: 8px;
-        }
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 8px;
-            margin-bottom: 8px;
-        }
-        .info-item {
-            padding: 6px 10px;
-            background: #f9f9f9;
-            border-radius: 3px;
-        }
-        .info-label {
-            font-size: 10px;
-            color: #999;
-            margin-bottom: 3px;
-        }
-        .info-value {
-            font-size: 12px;
-            color: #333;
-            font-weight: 500;
-            word-break: break-all;
-        }
-        .info-full {
-            grid-column: 1 / -1;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 5px;
-            font-size: 11px;
-        }
-        th, td {
-            padding: 6px 8px;
-            text-align: left;
-            border: 1px solid #e8e8e8;
-        }
-        th {
-            background: #fafafa;
-            font-weight: 600;
-            color: #333;
-        }
-        td {
-            color: #666;
-        }
-        tr:hover {
-            background: #f5f5f5;
-        }
-        .total-row {
-            font-weight: bold;
-            background: #e6f7ff !important;
-        }
-        .report-footer {
-            margin-top: 15px;
-            padding-top: 10px;
-            border-top: 1px solid #e8e8e8;
-            text-align: center;
-            color: #999;
-            font-size: 10px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>工单报告-{{.Id}}-{{.CustomerName}}</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* 去掉页眉页脚 */
+    @page {
+      margin: 10mm;
+      size: A4;
+    }
+
+    @media print {
+      body {
+        padding: 0;
+        background: white;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .report-container {
+        box-shadow: none;
+        padding: 15px;
+      }
+
+      /* 避免分页 */
+      .section {
+        page-break-inside: avoid;
+      }
+
+      table {
+        page-break-inside: avoid;
+      }
+    }
+
+    body {
+      font-family: 'Microsoft YaHei', Arial, sans-serif;
+      padding: 20px;
+      background: #f5f5f5;
+      font-size: 12px;
+    }
+
+    .report-container {
+      max-width: 210mm;
+      margin: 0 auto;
+      background: white;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .report-header {
+      text-align: center;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #1890ff;
+    }
+
+    .report-title {
+      font-size: 20px;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 5px;
+    }
+
+    .report-subtitle {
+      font-size: 11px;
+      color: #666;
+    }
+
+    .section {
+      margin-bottom: 15px;
+    }
+
+    .section-title {
+      font-size: 14px;
+      font-weight: bold;
+      color: #333;
+      padding: 6px 0;
+      border-left: 3px solid #1890ff;
+      padding-left: 10px;
+      margin-bottom: 8px;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .info-item {
+      padding: 6px 10px;
+      background: #f9f9f9;
+      border-radius: 3px;
+    }
+
+    .info-label {
+      font-size: 10px;
+      color: #999;
+      margin-bottom: 3px;
+    }
+
+    .info-value {
+      min-height: 16px;
+      font-size: 12px;
+      color: #333;
+      font-weight: 500;
+      word-break: break-all;
+    }
+
+    .info-full {
+      grid-column: 1 / -1;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 5px;
+      font-size: 11px;
+    }
+
+    th,
+    td {
+      padding: 6px 8px;
+      text-align: left;
+      border: 1px solid #e8e8e8;
+    }
+
+    th {
+      background: #fafafa;
+      font-weight: 600;
+      color: #333;
+    }
+
+    td {
+      color: #666;
+    }
+
+    tr:hover {
+      background: #f5f5f5;
+    }
+
+    .total-row {
+      font-weight: bold;
+      background: #e6f7ff !important;
+    }
+
+    .report-footer {
+      margin-top: 15px;
+      padding-top: 10px;
+      border-top: 1px solid #e8e8e8;
+      text-align: center;
+      color: #999;
+      font-size: 10px;
+    }
+  </style>
 </head>
+
 <body>
-    <div class="report-container">
-        <div class="report-header">
-            <div class="report-title">工单处理报告</div>
-            <div class="report-subtitle">工单编号：{{.Id}}</div>
-        </div>
-
-        <div class="section">
-            <div class="section-title">客户信息</div>
-            <div class="info-grid">
-                <div class="info-item">
-                    <div class="info-label">客户名称</div>
-                    <div class="info-value">{{.CustomerName}}</div>
-                </div>
-                <div class="info-item">
-                    <div class="info-label">联系方式</div>
-                    <div class="info-value">{{.CustomerContact}}</div>
-                </div>
-                <div class="info-item">
-                    <div class="info-label">客户地址</div>
-                    <div class="info-value">{{.CustomerAddress}}</div>
-                </div>
-                <div class="info-item">
-                    <div class="info-label">对接人</div>
-                    <div class="info-value">{{.CustomerPerson}}</div>
-                </div>
-                <div class="info-item">
-                    <div class="info-label">日期</div>
-                    <div class="info-value">{{.CreateTime}}</div>
-                </div>
-                <div class="info-item info-full">
-                    <div class="info-label">问题描述</div>
-                    <div class="info-value">{{.ProblemDescription}}</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="section">
-            <div class="section-title">工单处理</div>
-            <div class="info-grid">
-                <div class="info-item">
-                    <div class="info-label">处理人</div>
-                    <div class="info-value">{{.DispatchName}}</div>
-                </div>
-                <div class="info-item info-full">
-                    <div class="info-label">检测描述</div>
-                    <div class="info-value">{{.DefectDescription}}</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="section">
-            <div class="section-title">处理明细</div>
-            <table>
-                <thead>
-                    <tr>
-                        <th width="8%">序号</th>
-                        <th width="45%">服务项目</th>
-                        <th width="22%">处理类型</th>
-                        <th width="25%">金额（元）</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {{range $index, $detail := .Details}}
-                    <tr>
-                        <td>{{$detail.No}}</td>
-                        <td>{{$detail.ServiceName}}</td>
-                        <td>{{$detail.HandleTypeName}}</td>
-                        <td>{{printf "%.2f" $detail.Price}}</td>
-                    </tr>
-                    {{end}}
-                    <tr class="total-row">
-                        <td colspan="3" style="text-align: right;">合计：</td>
-                        <td>{{printf "%.2f" .TotalMoney}}</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <div class="report-footer">
-            <p>本报告由系统自动生成 - 生成时间：{{.GenerateTime}}</p>
-        </div>
+  <div class="report-container">
+    <div class="report-header">
+      <div class="report-title">工单处理报告</div>
+      <div class="report-subtitle">工单编号：{{.Id}}</div>
     </div>
+
+    <div class="section">
+      <div class="section-title">客户信息</div>
+      <div class="info-grid">
+        <div class="info-item">
+          <div class="info-label">客户名称</div>
+          <div class="info-value">{{.CustomerName}}</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">联系方式</div>
+          <div class="info-value">{{.CustomerContact}}</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">客户地址</div>
+          <div class="info-value">{{.CustomerAddress}}</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">对接人</div>
+          <div class="info-value">{{.CustomerPerson}}</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">日期</div>
+          <div class="info-value">{{.CreateTime}}</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">设备型号</div>
+          <div class="info-value">{{.DeviceModel}}</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">部件名称</div>
+          <div class="info-value">{{.ComponentName}}</div>
+        </div>
+        <div class="info-item info-full">
+          <div class="info-label">问题描述</div>
+          <div class="info-value">{{.ProblemDescription}}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">工单处理</div>
+      <div class="info-grid">
+        <div class="info-item">
+          <div class="info-label">处理人</div>
+          <div class="info-value">{{.DispatchName}}</div>
+        </div>
+        <div class="info-item info-full">
+          <div class="info-label">检测描述</div>
+          <div class="info-value">{{.DefectDescription}}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">处理明细</div>
+      <table>
+        <thead>
+          <tr>
+            <th width="8%">序号</th>
+            <th width="45%">服务项目</th>
+            <th width="22%">处理类型</th>
+            <th width="25%">金额（元）</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{range $index, $detail := .Details}}
+          <tr>
+            <td>{{$detail.No}}</td>
+            <td>{{$detail.ServiceName}}</td>
+            <td>{{$detail.HandleTypeName}}</td>
+            <td>{{printf "%.2f" $detail.Price}}</td>
+          </tr>
+          {{end}}
+          <tr class="total-row">
+            <td colspan="3" style="text-align: right;">合计：</td>
+            <td>{{printf "%.2f" .TotalMoney}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="report-footer">
+      <p>本报告由系统自动生成 - 生成时间：{{.GenerateTime}}</p>
+    </div>
+  </div>
 </body>
+
 </html>

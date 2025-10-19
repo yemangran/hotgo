@@ -40,6 +40,8 @@ type BsWorkOrderColumns struct {
 	TotalMoney         string // 总金额
 	InvoiceType        string // 开票类型
 	Remark             string // 备注
+	DeviceModel        string // 设备型号
+	ComponentName      string // 部件名称
 }
 
 // bsWorkOrderColumns holds the columns for the table hg_bs_work_order.
@@ -63,6 +65,8 @@ var bsWorkOrderColumns = BsWorkOrderColumns{
 	TotalMoney:         "total_money",
 	InvoiceType:        "invoice_type",
 	Remark:             "remark",
+	DeviceModel:        "device_model",
+	ComponentName:      "component_name",
 }
 
 // NewBsWorkOrderDao creates and returns a new DAO object for table data access.

@@ -34,6 +34,16 @@
                   <n-select v-model:value="formValue.dispatchId" :options="userOptions" />
                 </n-form-item>
               </n-gi>
+              <n-gi span="1">
+                <n-form-item label="设备型号" path="deviceModel">
+                  <n-input placeholder="请输入设备型号" v-model:value="formValue.deviceModel" />
+                </n-form-item>
+              </n-gi>
+              <n-gi span="1">
+                <n-form-item label="部件名称" path="componentName">
+                  <n-input placeholder="请输入部件名称" v-model:value="formValue.componentName" />
+                </n-form-item>
+              </n-gi>
               <n-gi span="2">
                 <n-form-item label="问题描述" path="problemDescription">
                   <n-input type="textarea" placeholder="问题描述" v-model:value="formValue.problemDescription" />

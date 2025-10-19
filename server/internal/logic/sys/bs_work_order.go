@@ -192,6 +192,16 @@ func (s *sSysBsWorkOrder) List(ctx context.Context, in *sysin.BsWorkOrderListInp
 		mod = mod.Where(dao.BsWorkOrder.Columns().InvoiceType, in.InvoiceType)
 	}
 
+	// 查询设备型号
+	if in.DeviceModel != "" {
+		mod = mod.WhereLike(dao.BsWorkOrder.Columns().DeviceModel, in.DeviceModel)
+	}
+
+	// 查询部件名称
+	if in.ComponentName != "" {
+		mod = mod.WhereLike(dao.BsWorkOrder.Columns().ComponentName, in.ComponentName)
+	}
+
 	// 分页
 	mod = mod.Page(in.Page, in.PerPage)
 
@@ -380,6 +390,8 @@ func (s *sSysBsWorkOrder) GenerateReport(ctx context.Context, id int64) (html st
 		"DefectDescription":  workOrder.DefectDescription,
 		"Details":            detailList,
 		"TotalMoney":         workOrder.TotalMoney,
+		"DeviceModel":        workOrder.DeviceModel,
+		"ComponentName":      workOrder.ComponentName,
 		"GenerateTime":       gtime.Now().Format("Y-m-d H:i:s"),
 	}
 

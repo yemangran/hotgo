@@ -29,4 +29,6 @@ type BsWorkOrder struct {
 	TotalMoney         float64     `json:"totalMoney"         orm:"total_money"         description:"总金额"`
 	InvoiceType        int         `json:"invoiceType"        orm:"invoice_type"        description:"开票类型"`
 	Remark             string      `json:"remark"             orm:"remark"              description:"备注"`
+	DeviceModel        string      `json:"deviceModel"        orm:"device_model"        description:"设备型号"`
+	ComponentName      string      `json:"componentName"      orm:"component_name"      description:"部件名称"`
 }

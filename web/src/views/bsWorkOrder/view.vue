@@ -30,6 +30,18 @@
             </n-descriptions-item>
             <n-descriptions-item>
               <template #label>
+                设备型号
+              </template>
+              {{ formValue.deviceModel }}
+            </n-descriptions-item>
+            <n-descriptions-item>
+              <template #label>
+                部件名称
+              </template>
+              {{ formValue.componentName }}
+            </n-descriptions-item>
+            <n-descriptions-item>
+              <template #label>
                 问题描述
               </template>
               <span v-html="formValue.problemDescription"></span>
