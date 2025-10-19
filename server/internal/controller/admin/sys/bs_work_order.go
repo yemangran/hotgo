@@ -77,3 +77,15 @@ func (c *cBsWorkOrder) Status(ctx context.Context, req *bsworkorder.StatusReq) (
 	err = service.SysBsWorkOrder().Status(ctx, &req.BsWorkOrderStatusInp)
 	return
 }
+
+// GenerateReport 生成工单报告
+func (c *cBsWorkOrder) GenerateReport(ctx context.Context, req *bsworkorder.GenerateReportReq) (res *bsworkorder.GenerateReportRes, err error) {
+	html, err := service.SysBsWorkOrder().GenerateReport(ctx, req.Id)
+	if err != nil {
+		return
+	}
+	res = &bsworkorder.GenerateReportRes{
+		Html: html,
+	}
+	return
+}

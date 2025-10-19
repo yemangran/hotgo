@@ -73,3 +73,13 @@ type ProcessReq struct {
 }
 
 type ProcessRes struct{}
+
+// GenerateReportReq 生成工单报告
+type GenerateReportReq struct {
+	g.Meta `path:"/bsWorkOrder/generateReport" method:"get" tags:"工单管理" summary:"生成工单报告"`
+	Id     int64 `json:"id" v:"required#工单ID不能为空" dc:"工单ID"`
+}
+
+type GenerateReportRes struct {
+	Html string `json:"html" dc:"报告HTML内容"`
+}

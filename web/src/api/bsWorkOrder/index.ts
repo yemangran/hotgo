@@ -58,3 +58,12 @@ export function Process(params) {
     params,
   });
 }
+
+// 生成工单报告
+export function GenerateReport(params) {
+  return http.request({
+    url: '/bsWorkOrder/generateReport',
+    method: 'GET',
+    params,
+  });
+}

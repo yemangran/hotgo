@@ -23,6 +23,9 @@ import (
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gctx"
+	"github.com/gogf/gf/v2/os/gfile"
+	"github.com/gogf/gf/v2/os/gtime"
+	"github.com/gogf/gf/v2/os/gview"
 	"github.com/gogf/gf/v2/util/gconv"
 )
 
@@ -291,5 +294,115 @@ func (s *sSysBsWorkOrder) Status(ctx context.Context, in *sysin.BsWorkOrderStatu
 		err = gerror.Wrap(err, "更新工单管理状态失败，请稍后重试！")
 		return
 	}
+	return
+}
+
+// GenerateReport 生成工单报告
+func (s *sSysBsWorkOrder) GenerateReport(ctx context.Context, id int64) (html string, err error) {
+	// 1. 获取工单基本信息
+	var workOrder *entity.BsWorkOrder
+	if err = s.Model(ctx).WherePri(id).Scan(&workOrder); err != nil {
+		err = gerror.Wrap(err, "获取工单信息失败")
+		return
+	}
+
+	if workOrder == nil {
+		err = gerror.New("工单不存在")
+		return
+	}
+
+	// 2. 获取处理人信息
+	var member entity.AdminMember
+	dispatchName := "未分配"
+	if workOrder.DispatchId > 0 {
+		if err = dao.AdminMember.Ctx(ctx).Where("id", workOrder.DispatchId).Scan(&member); err == nil {
+			dispatchName = member.Username
+		}
+	}
+
+	// 3. 获取工单明细
+	var details []*entity.BsReportDetail
+	if err = dao.BsReportDetail.Ctx(ctx).
+		Where(dao.BsReportDetail.Columns().WorkOrderId, id).
+		Scan(&details); err != nil {
+		err = gerror.Wrap(err, "获取工单明细失败")
+		return
+	}
+
+	// 4. 构建模板数据
+	type DetailData struct {
+		No             int // 序号
+		ServiceName    string
+		HandleTypeName string
+		Price          float64
+	}
+
+	var detailList []DetailData
+	for idx, detail := range details {
+		// 获取服务项目名称
+		var service entity.BsService
+		serviceName := "未知服务"
+		if err = dao.BsService.Ctx(ctx).Where("id", detail.ServiceId).Scan(&service); err == nil {
+			serviceName = service.Name
+		}
+
+		// 转换处理类型
+		handleTypeName := "未知"
+		switch detail.HandleType {
+		case "1":
+			handleTypeName = "维修"
+		case "2":
+			handleTypeName = "更换"
+		case "3":
+			handleTypeName = "其他"
+		}
+
+		detailList = append(detailList, DetailData{
+			No:             idx + 1, // 直接计算序号
+			ServiceName:    serviceName,
+			HandleTypeName: handleTypeName,
+			Price:          detail.Price,
+		})
+	}
+
+	//TODO: 添加字典项对应的展示
+
+	// 5. 准备模板数据
+	templateData := g.Map{
+		"Id":                 workOrder.Id,
+		"CustomerName":       workOrder.CustomerName,
+		"CustomerContact":    workOrder.CustomerContact,
+		"CustomerAddress":    workOrder.CustomerAddress,
+		"CustomerPerson":     workOrder.CustomerPerson,
+		"ProblemDescription": workOrder.ProblemDescription,
+		"DispatchName":       dispatchName,
+		"CreateTime":         workOrder.CreateTime.Format("Y-m-d H:i:s"),
+		"DefectDescription":  workOrder.DefectDescription,
+		"Details":            detailList,
+		"TotalMoney":         workOrder.TotalMoney,
+		"GenerateTime":       gtime.Now().Format("Y-m-d H:i:s"),
+	}
+
+	// 6. 读取并渲染模板
+	tmplPath := gfile.Join(gfile.Pwd(), "resource/template/report/work_order.html")
+	if !gfile.Exists(tmplPath) {
+		err = gerror.Newf("模板文件不存在: %s", tmplPath)
+		return
+	}
+
+	// 读取模板内容
+	tmplContent := gfile.GetContents(tmplPath)
+	if tmplContent == "" {
+		err = gerror.New("模板文件为空")
+		return
+	}
+
+	// 解析并执行模板
+	html, err = gview.New().ParseContent(ctx, tmplContent, templateData)
+	if err != nil {
+		err = gerror.Wrap(err, "渲染模板失败")
+		return
+	}
+
 	return
 }

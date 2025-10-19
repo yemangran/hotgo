@@ -141,6 +141,8 @@ type (
 		Status(ctx context.Context, in *sysin.BsWorkOrderStatusInp) (err error)
 		// Process 工单处理
 		Process(ctx context.Context, in *sysin.BsWorkOrderProcessInp) (err error)
+		// GenerateReport 生成工单报告
+		GenerateReport(ctx context.Context, id int64) (html string, err error)
 	}
 	ISysConfig interface {
 		// InitConfig 初始化系统配置

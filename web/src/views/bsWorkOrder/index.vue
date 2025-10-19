@@ -33,8 +33,7 @@
             </template>
             批量删除
           </n-button>
-          <n-button @click="handleExport" class="min-left-space"
-            v-if="hasPermission(['/bsWorkOrder/export'])">
+          <n-button @click="handleExport" class="min-left-space" v-if="hasPermission(['/bsWorkOrder/export'])">
             <template #icon>
               <n-icon>
                 <ExportOutlined />
@@ -58,13 +57,14 @@ import { BasicTable, TableAction } from '@/components/Table';
 import { BasicForm, useForm } from '@/components/Form/index';
 import { usePermission } from '@/hooks/web/usePermission';
 import { useDictStore } from '@/store/modules/dict';
-import { List, Export, Delete, Status } from '@/api/bsWorkOrder';
+import { List, Export, Delete, Status, GenerateReport } from '@/api/bsWorkOrder';
 import { PlusOutlined, ExportOutlined, DeleteOutlined } from '@vicons/antd';
 import { State, columns, schemas, loadOptions } from './model';
 import { adaTableScrollX } from '@/utils/hotgo';
 import Edit from './edit.vue';
 import View from './view.vue';
 import Process from './process.vue';
+import printJS from 'print-js';
 
 const dict = useDictStore();
 const dialog = useDialog();
@@ -109,10 +109,18 @@ const actionColumn = reactive({
           key: 'view',
           auth: ['/bsWorkOrder/view'],
         },
+        {
+          label: '生成报告',
+          key: 'generate',
+          auth: ['/bsWorkOrder/export'],
+        }
       ],
       select: (key) => {
         if (key === 'view') {
           return handleView(record);
+        }
+        if (key === 'generate') {
+          return handleGenerate(record);
         }
       },
     });
@@ -162,6 +170,51 @@ function handleEdit(record: Recordable) {
 // 查看详情
 function handleView(record: Recordable) {
   viewRef.value.openModal(record);
+}
+
+//生成报告
+async function handleGenerate(record: Recordable) {
+  try {
+    message.loading('正在生成报告...', { duration: 0 });
+    
+    // 调用后端接口生成HTML报告
+    const res = await GenerateReport({ id: record.id });
+    
+    message.destroyAll();
+    
+    if (!res || !res.html) {
+      message.error('生成报告失败');
+      return;
+    }
+    
+    // 直接使用window.print()打印HTML内容
+    // 创建一个新窗口来打印
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) {
+      message.error('无法打开打印窗口，请检查浏览器设置');
+      return;
+    }
+    
+    // 写入HTML内容
+    printWindow.document.write(res.html);
+    printWindow.document.close();
+    
+    // 等待内容加载完成后打印
+    printWindow.onload = () => {
+      setTimeout(() => {
+        printWindow.print();
+        // 打印完成后关闭窗口
+        printWindow.onafterprint = () => {
+          printWindow.close();
+        };
+      }, 500);
+    };
+    
+  } catch (error) {
+    message.destroyAll();
+    console.error('生成报告失败:', error);
+    message.error('生成报告失败，请稍后重试');
+  }
 }
 
 // 单个删除
