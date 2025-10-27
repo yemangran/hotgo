@@ -1,0 +1,31 @@
+FROM loads/alpine:3.8
+
+LABEL maintainer="yemangran@jingxiang.ltd"
+
+###############################################################################
+#                                INSTALLATION
+###############################################################################
+
+# 设置固定的项目路径
+ENV WORKDIR /app/hotgo
+
+# 添加应用可执行文件，并设置执行权限
+
+ADD ./hotgo $WORKDIR/hotgo
+# ADD ./manifest $WORKDIR/manifest
+# ADD ./hack $WORKDIR/hack
+RUN chmod +x $WORKDIR/hotgo
+
+# 添加静态资源文件
+# ADD resource $WORKDIR/resource
+
+###############################################################################
+#                                   START
+###############################################################################
+WORKDIR $WORKDIR
+CMD ./hotgo
+
+# sudo docker run -d --name wzj-ticket \
+#   -p 8101:8000 \
+#   --add-host=host.docker.internal:host-gateway \
+#   8609
