@@ -1,6 +1,8 @@
 import { h } from 'vue';
 import { NAvatar, NTag, NText } from 'naive-ui';
 import { formatBefore } from '@/utils/dateUtil';
+import { renderOptionTag } from '@/utils';
+import { State } from './model';
 
 export const columns = [
   {
@@ -17,7 +19,7 @@ export const columns = [
     title: '姓名',
     key: 'realName',
     width: 100,
-    render(row) {
+    render(row: State) {
       if (row.realName == '') {
         return h(NText, { depth: 3 }, { default: () => '未设置' });
       }
@@ -107,10 +109,18 @@ export const columns = [
     },
   },
   {
+    title: '折扣等级',
+    key: 'discountGrade',
+    width: -1,
+    render(row: State) {
+      return renderOptionTag('biz_discount', row.discountGrade);
+    },
+  },
+  {
     title: '状态',
     key: 'status',
     width: 80,
-    render(row) {
+    render(row: State) {
       return h(
         NTag,
         {

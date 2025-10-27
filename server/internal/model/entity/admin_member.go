@@ -39,4 +39,5 @@ type AdminMember struct {
 	Status             int         `json:"status"             orm:"status"               description:"状态"`
 	CreatedAt          *gtime.Time `json:"createdAt"          orm:"created_at"           description:"创建时间"`
 	UpdatedAt          *gtime.Time `json:"updatedAt"          orm:"updated_at"           description:"修改时间"`
+	DiscountGrade      int         `json:"discountGrade"      orm:"discount_grade"       description:"折扣等级"`
 }

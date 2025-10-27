@@ -49,6 +49,7 @@ type AdminMemberColumns struct {
 	Status             string // 状态
 	CreatedAt          string // 创建时间
 	UpdatedAt          string // 修改时间
+	DiscountGrade      string // 折扣等级
 }
 
 // adminMemberColumns holds the columns for the table hg_admin_member.
@@ -81,6 +82,7 @@ var adminMemberColumns = AdminMemberColumns{
 	Status:             "status",
 	CreatedAt:          "created_at",
 	UpdatedAt:          "updated_at",
+	DiscountGrade:      "discount_grade",
 }
 
 // NewAdminMemberDao creates and returns a new DAO object for table data access.

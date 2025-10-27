@@ -8,14 +8,15 @@ package adminin
 import (
 	"context"
 	"fmt"
-	"github.com/gogf/gf/v2/errors/gerror"
-	"github.com/gogf/gf/v2/frame/g"
-	"github.com/gogf/gf/v2/os/gtime"
 	"hotgo/internal/consts"
 	"hotgo/internal/library/contexts"
 	"hotgo/internal/model/entity"
 	"hotgo/internal/model/input/form"
 	"hotgo/utility/validate"
+
+	"github.com/gogf/gf/v2/errors/gerror"
+	"github.com/gogf/gf/v2/frame/g"
+	"github.com/gogf/gf/v2/os/gtime"
 )
 
 // MemberUpdateCashInp 更新会员提现信息
@@ -114,26 +115,27 @@ type LoginMemberInfoModel struct {
 
 // MemberEditInp 修改用户
 type MemberEditInp struct {
-	Id           int64       `json:"id"                                            dc:"管理员ID"`
-	RoleId       int64       `json:"roleId"    v:"required#角色不能为空"            dc:"角色ID"`
-	PostIds      []int64     `json:"postIds"                                       dc:"岗位ID"`
-	DeptId       int64       `json:"deptId"    v:"required#部门不能为空"            dc:"部门ID"`
-	Username     string      `json:"username"   v:"required#账号不能为空"           dc:"帐号"`
-	PasswordHash string      `json:"passwordHash"                                  dc:"密码hash"`
-	Password     string      `json:"password"                                      dc:"密码"`
-	RealName     string      `json:"realName"                                      dc:"真实姓名"`
-	Avatar       string      `json:"avatar"                                        dc:"头像"`
-	Sex          int         `json:"sex"                                           dc:"性别"`
-	Qq           string      `json:"qq"                                            dc:"qq"`
-	Email        string      `json:"email"                                         dc:"邮箱"`
-	Birthday     *gtime.Time `json:"birthday"                                      dc:"生日"`
-	ProvinceId   int         `json:"provinceId"                                    dc:"省"`
-	CityId       int         `json:"cityId"                                        dc:"城市"`
-	AreaId       int         `json:"areaId"                                        dc:"地区"`
-	Address      string      `json:"address"                                       dc:"默认地址"`
-	Mobile       string      `json:"mobile"                                        dc:"手机号码"`
-	Remark       string      `json:"remark"                                        dc:"备注"`
-	Status       int         `json:"status"                                        dc:"状态"`
+	Id            int64       `json:"id"                                            dc:"管理员ID"`
+	RoleId        int64       `json:"roleId"    v:"required#角色不能为空"            dc:"角色ID"`
+	PostIds       []int64     `json:"postIds"                                       dc:"岗位ID"`
+	DeptId        int64       `json:"deptId"    v:"required#部门不能为空"            dc:"部门ID"`
+	Username      string      `json:"username"   v:"required#账号不能为空"           dc:"帐号"`
+	PasswordHash  string      `json:"passwordHash"                                  dc:"密码hash"`
+	Password      string      `json:"password"                                      dc:"密码"`
+	RealName      string      `json:"realName"                                      dc:"真实姓名"`
+	Avatar        string      `json:"avatar"                                        dc:"头像"`
+	Sex           int         `json:"sex"                                           dc:"性别"`
+	Qq            string      `json:"qq"                                            dc:"qq"`
+	Email         string      `json:"email"                                         dc:"邮箱"`
+	Birthday      *gtime.Time `json:"birthday"                                      dc:"生日"`
+	ProvinceId    int         `json:"provinceId"                                    dc:"省"`
+	CityId        int         `json:"cityId"                                        dc:"城市"`
+	AreaId        int         `json:"areaId"                                        dc:"地区"`
+	Address       string      `json:"address"                                       dc:"默认地址"`
+	Mobile        string      `json:"mobile"                                        dc:"手机号码"`
+	DiscountGrade int         `json:"discountGrade"                                 dc:"折扣等级"`
+	Remark        string      `json:"remark"                                        dc:"备注"`
+	Status        int         `json:"status"                                        dc:"状态"`
 }
 
 // MemberAddInp 新增用户

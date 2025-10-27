@@ -66,6 +66,7 @@ export const defaultState = {
   leader: '',
   phone: '',
   sort: 0,
+  discountGrade: 0,
   status: 1,
   createdAt: '',
   updatedAt: '',
@@ -85,6 +86,7 @@ export interface State {
   leader: string;
   phone: string;
   sort: number;
+  discountGrade: number;
   status: number;
   createdAt: string;
   updatedAt: string;
@@ -198,7 +200,7 @@ export const deptTreeOptions = ref([]);
 export const roleTreeOptions = ref([]);
 
 export async function loadOptions() {
-  dict.loadOptions(['adminPostOption', 'sys_user_sex', 'sys_normal_disable']);
+  dict.loadOptions(['adminPostOption', 'sys_user_sex', 'sys_normal_disable', 'biz_discount']);
 
   getDeptOption().then((res) => {
     if (res.list) {
@@ -229,9 +231,9 @@ function registerRoleTabsOption() {
 function treeDataToCompressed(items: any[], source: any) {
   for (const i in source) {
     items.push(source[i]);
-    source[i].children && source[i].children.length > 0
-      ? treeDataToCompressed(items, source[i].children)
-      : ''; // 子级递归
+    if (source[i].children && source[i].children.length > 0) {
+      treeDataToCompressed(items, source[i].children); // 子级递归
+    }
   }
   return items;
 }

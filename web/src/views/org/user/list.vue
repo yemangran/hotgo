@@ -180,6 +180,19 @@
             </n-form-item>
           </n-gi>
           <n-gi>
+            <n-form-item label="折扣等级" path="discountGrade">
+              <n-select
+                v-model:value="formParams.discountGrade"
+                :options="dict.getOptionUnRef('biz_discount')"
+                placeholder="请选择折扣等级"
+                clearable
+              />
+            </n-form-item>
+          </n-gi>
+        </n-grid>
+
+        <n-grid x-gap="24" :cols="2">
+          <n-gi>
             <n-form-item label="状态" path="status">
               <n-radio-group v-model:value="formParams.status" name="status">
                 <n-radio-button
@@ -190,6 +203,8 @@
                 />
               </n-radio-group>
             </n-form-item>
+          </n-gi>
+          <n-gi>
           </n-gi>
         </n-grid>
 
