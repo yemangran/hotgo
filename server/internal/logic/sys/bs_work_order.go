@@ -24,6 +24,7 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gctx"
 	"github.com/gogf/gf/v2/os/gfile"
+	"github.com/gogf/gf/v2/os/gres"
 	"github.com/gogf/gf/v2/os/gtime"
 	"github.com/gogf/gf/v2/os/gview"
 	"github.com/gogf/gf/v2/util/gconv"
@@ -396,16 +397,19 @@ func (s *sSysBsWorkOrder) GenerateReport(ctx context.Context, id int64) (html st
 	}
 
 	// 6. 读取并渲染模板
-	tmplPath := gfile.Join(gfile.Pwd(), "resource/template/report/work_order.html")
-	if !gfile.Exists(tmplPath) {
-		err = gerror.Newf("模板文件不存在: %s", tmplPath)
-		return
+	// 优先从本地文件加载，如果不存在则从嵌入资源中加载
+	tmplPath := "resource/template/report/work_order.html"
+	tmplContent := gfile.GetContents(tmplPath)
+
+	// 如果本地文件不存在，尝试从嵌入资源加载
+	if len(tmplContent) == 0 {
+		if !gres.IsEmpty() && gres.Contains(tmplPath) {
+			tmplContent = string(gres.GetContent(tmplPath))
+		}
 	}
 
-	// 读取模板内容
-	tmplContent := gfile.GetContents(tmplPath)
-	if tmplContent == "" {
-		err = gerror.New("模板文件为空")
+	if len(tmplContent) == 0 {
+		err = gerror.Newf("模板文件不存在: %s", tmplPath)
 		return
 	}
 
