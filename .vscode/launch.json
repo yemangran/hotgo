@@ -2,7 +2,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "GoFrame调试",
+            "name": "调试",
             "type": "go",
             "request": "launch",
             "mode": "auto",
@@ -16,9 +16,7 @@
             "showLog": true,
             "trace": "verbose",
             "stopOnEntry": false,
-            "console": "integratedTerminal",
-            "preLaunchTask": "",
-            "postDebugTask": ""
+            "console": "integratedTerminal"
         }
     ]
 }

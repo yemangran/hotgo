@@ -376,8 +376,6 @@ func (s *sSysBsWorkOrder) GenerateReport(ctx context.Context, id int64) (html st
 		})
 	}
 
-	//TODO: 添加字典项对应的展示
-
 	// 5. 准备模板数据
 	templateData := g.Map{
 		"Id":                 workOrder.Id,
@@ -394,6 +392,18 @@ func (s *sSysBsWorkOrder) GenerateReport(ctx context.Context, id int64) (html st
 		"DeviceModel":        workOrder.DeviceModel,
 		"ComponentName":      workOrder.ComponentName,
 		"GenerateTime":       gtime.Now().Format("Y-m-d H:i:s"),
+	}
+
+	//TODO: 添加多个字典项对应的展示
+	option, err := service.SysDictData().Select(ctx, &sysin.DataSelectInp{Type: "invoice_type"})
+	if err != nil {
+		err = gerror.Wrap(err, "获取字典项失败")
+		return
+	}
+	for _, item := range option {
+		if item.Value == workOrder.InvoiceType {
+			templateData["InvoiceType"] = item.Label
+		}
 	}
 
 	// 6. 读取并渲染模板
