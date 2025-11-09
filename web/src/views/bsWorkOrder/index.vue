@@ -64,7 +64,6 @@ import { adaTableScrollX } from '@/utils/hotgo';
 import Edit from './edit.vue';
 import View from './view.vue';
 import Process from './process.vue';
-import printJS from 'print-js';
 
 const dict = useDictStore();
 const dialog = useDialog();

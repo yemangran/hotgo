@@ -5,4 +5,5 @@
 pull.bat
 push.sh
 /dist
+__debug__bin.*
 
