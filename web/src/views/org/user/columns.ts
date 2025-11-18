@@ -109,11 +109,11 @@ export const columns = [
     },
   },
   {
-    title: '折扣等级',
+    title: '会员等级',
     key: 'discountGrade',
     width: -1,
     render(row: State) {
-      return renderOptionTag('biz_discount', row.discountGrade);
+      return renderOptionTag('biz_vip_level', row.discountGrade);
     },
   },
   {

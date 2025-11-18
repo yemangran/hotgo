@@ -37,15 +37,10 @@
             </n-grid>
             <n-divider title-placement="left">
               <n-icon :size="20" :component="MoneyCollectOutlined" />
-              折扣等级
+              会员等级
             </n-divider>
             <n-button strong tertiary type="primary" @click="addLevel">
-              <template #icon>
-                <NIcon>
-                  <AddIcon />
-                </NIcon>
-              </template>
-              添加
+              新增
             </n-button>
             <n-data-table :columns="levelColumns" :data="levelData" :bordered="false" />
           </n-form>
@@ -66,17 +61,20 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue';
+import { ref, computed, h } from 'vue';
 import { Edit, View } from '@/api/bsService';
 import { State, newState, treeOption, loadTreeOption, rules } from './model';
 import { useProjectSettingStore } from '@/store/modules/projectSetting';
 import { useMessage } from 'naive-ui';
 import { adaModalWidth } from '@/utils/hotgo';
 import { MoneyCollectOutlined, DatabaseOutlined } from '@vicons/antd'
+import { TableAction } from '@/components/Table';
+import { useDictStore } from '@/store/modules/dict'
 
 const emit = defineEmits(['reloadTable']);
 const message = useMessage();
 const settingStore = useProjectSettingStore();
+const dict = useDictStore()
 
 const loading = ref(false);
 const showModal = ref(false);
@@ -86,12 +84,52 @@ const formBtnLoading = ref(false);
 const dialogWidth = computed(() => {
   return adaModalWidth(840);
 });
-// todo)) 折扣等级
-const levelColumns = []
-const levelData = ref([])
+
+const levelColumns = [
+  {
+    title: '会员等级',
+    key: 'dictLabel'
+  },
+  {
+    title: '折扣比值',
+    key: 'ratio'
+  },
+  {
+    width: 216,
+    title: '操作',
+    key: 'action',
+    fixed: 'right',
+    render(record: State) {
+      return h(TableAction as any, {
+        style: 'button',
+        actions: [
+          {
+            label: '重置',
+            onClick: handleReset.bind(null, record),
+            auth: ['/bsService/edit'],
+          }
+        ],
+      });
+    }
+  }
+]
+const levelData = ref<Recordable[]>([])
 
 function addLevel() {
+  const opts = dict.getOptionUnRef('biz_vip_level') || []
+  const exist = new Set(levelData.value.map((d: any) => d.dictValue ?? d.dictLabel))
+  const rows: any[] = []
+  for (const opt of opts) {
+    const key = (opt as any).value ?? (opt as any).label
+    if (exist.has(key)) continue
+    rows.push({ dictValue: key, dictLabel: (opt as any).label, ratio: 100 })
+  }
+  levelData.value = [...levelData.value, ...rows]
+}
 
+//重置折扣为100%
+function handleReset(record: Recordable) {
+  ;(record as any).ratio = 100
 }
 
 // 提交表单
@@ -127,6 +165,7 @@ function openModal(state: State) {
 
   // 加载关系树选项
   loadTreeOption();
+  dict.loadOptions(['biz_vip_level'])
 
   // 新增
   if (!state || state.id < 1) {

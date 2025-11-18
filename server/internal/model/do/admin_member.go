@@ -41,5 +41,5 @@ type AdminMember struct {
 	Status             any         // 状态
 	CreatedAt          *gtime.Time // 创建时间
 	UpdatedAt          *gtime.Time // 修改时间
-	DiscountGrade      any         // 折扣等级
+	DiscountGrade      any         // 会员等级
 }

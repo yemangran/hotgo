@@ -180,11 +180,11 @@
             </n-form-item>
           </n-gi>
           <n-gi>
-            <n-form-item label="折扣等级" path="discountGrade">
+            <n-form-item label="会员等级" path="discountGrade">
               <n-select
                 v-model:value="formParams.discountGrade"
-                :options="dict.getOptionUnRef('biz_discount')"
-                placeholder="请选择折扣等级"
+                :options="dict.getOptionUnRef('biz_vip_level')"
+                placeholder="请选择会员等级"
                 clearable
               />
             </n-form-item>

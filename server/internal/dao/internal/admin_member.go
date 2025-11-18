@@ -49,7 +49,7 @@ type AdminMemberColumns struct {
 	Status             string // 状态
 	CreatedAt          string // 创建时间
 	UpdatedAt          string // 修改时间
-	DiscountGrade      string // 折扣等级
+	DiscountGrade      string // 会员等级
 }
 
 // adminMemberColumns holds the columns for the table hg_admin_member.

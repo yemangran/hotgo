@@ -133,7 +133,7 @@ type MemberEditInp struct {
 	AreaId        int         `json:"areaId"                                        dc:"地区"`
 	Address       string      `json:"address"                                       dc:"默认地址"`
 	Mobile        string      `json:"mobile"                                        dc:"手机号码"`
-	DiscountGrade int         `json:"discountGrade"                                 dc:"折扣等级"`
+	DiscountGrade int         `json:"discountGrade"                                 dc:"会员等级"`
 	Remark        string      `json:"remark"                                        dc:"备注"`
 	Status        int         `json:"status"                                        dc:"状态"`
 }

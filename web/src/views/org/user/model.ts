@@ -200,7 +200,7 @@ export const deptTreeOptions = ref([]);
 export const roleTreeOptions = ref([]);
 
 export async function loadOptions() {
-  dict.loadOptions(['adminPostOption', 'sys_user_sex', 'sys_normal_disable', 'biz_discount']);
+  dict.loadOptions(['adminPostOption', 'sys_user_sex', 'sys_normal_disable', 'biz_vip_level']);
 
   getDeptOption().then((res) => {
     if (res.list) {
